@@ -1,1 +1,37 @@
 Howdy! This is a test!
+
+Queries to the Database:
+1.  \dt 
+2.  \d sales
+3.  \d inventory
+4.  \d products
+
+5.  SELECT * FROM sales;
+6.  SELECT * FROM inventory;
+7.  SELECT * FROM products;
+
+8.  SELECT SUM(totalsales) FROM sales;
+9.  SELECT SUM(salesubtotal) FROM sales;
+10. SELECT SUM(saletax) FROM sales;
+11. SELECT startdate, enddate FROM sales;
+
+12. SELECT salesubtotal || '+' || saletax || '=', totalsales FROM sales;
+13. SELECT * FROM sales WHERE totalsales = (SELECT MAX(totalsales) FROM sales);
+14. SELECT *
+    FROM <table>
+    WHERE <column> IN (
+        SELECT <column>
+        FROM <table>
+        ORDER BY <column> DESC
+        LIMIT <amount of rows returned>
+    )
+    ORDER BY <column> DESC;
+
+15. SELECT product_name, price FROM products;
+16. SELECT item_name, item_amount FROM inventory;
+
+17. ALTER TABLE sales ADD CONSTRAINT unique_start_date UNIQUE (startdate);
+18. ALTER TABLE sales ADD CONSTRAINT unique_end_date UNIQUE (enddate);
+
+19. ALTER TABLE <table_name> DROP CONSTRAINT <some_name>;
+20. SELECT COUNT(*) FROM <table>
