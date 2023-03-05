@@ -4,6 +4,8 @@ import javax.swing.JLabel;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Dimension;
+
 
 public class MainPanel extends JPanel{
     
@@ -15,6 +17,7 @@ public class MainPanel extends JPanel{
     public MainPanel(){
         cardLayout = new CardLayout();
         setLayout(cardLayout);
+        setPreferredSize(new Dimension(1100, 700));
         
         subPanel1 = new JPanel();
         JLabel tempLabel1 = new JLabel("HOwdy!");
