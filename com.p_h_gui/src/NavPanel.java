@@ -4,18 +4,18 @@ import java.awt.*;
 
 public class NavPanel extends JPanel{
 
-    JButton button1;
+    JButton buttons[] = new JButton[5];
     JLabel tempLabel;
 
     public NavPanel(){
         setLayout(new GridBagLayout());
-
         GridBagConstraints c = new GridBagConstraints();
         c = setGridBagConstraints(c);
 
         for (int i = 1; i <=5; i++){
             JButton newButton = new JButton("Button " + i);
             c.gridy = i; // Position the first button at row i
+            buttons[i - 1] = newButton;
             add(newButton, c);
         }
 

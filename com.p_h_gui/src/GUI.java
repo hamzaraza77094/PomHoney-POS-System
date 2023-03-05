@@ -1,7 +1,7 @@
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.BorderFactory;
-import javax.swing.border.Border;
+// import javax.swing.border.Border;
 
 
 
@@ -27,10 +27,7 @@ public class GUI extends JFrame{
         add(mainPanel, c);
 
 
-        pack();
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1200, 800);
-        setVisible(true);
+        setGUIFrame();
         
     } // Contructor
     private GridBagConstraints setGridBagConstraints(GridBagConstraints c){
@@ -43,5 +40,12 @@ public class GUI extends JFrame{
 
         return c;
     } // Moved constraints to clean code
+
+    private void setGUIFrame(){
+        pack();
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1200, 800);
+        setVisible(true);
+    } // Cleaning up GUI Constructor by moving some of the frame creation stuff outside of the constructor
 
 }
