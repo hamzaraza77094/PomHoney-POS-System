@@ -1,44 +1,44 @@
+import java.awt.Color;
+// import java.awt.Dimension;
+
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.BorderFactory;
+import javax.swing.border.Border;
+// import java.awt.CardLayout;
+// import java.awt.event.ActionEvent;
+// import java.awt.event.ActionListener;
 
-public class GUI implements ActionListener {
-    JFrame frame;
-    JPanel panel;
-    JButton button;
-    JLabel label;
-    int count = 0;
-
+public class GUI{
+    private JFrame frame;
+    private MainPanel mainPanel;
+   
     public GUI(){
         frame = new JFrame();
+
+        Border blackline = BorderFactory.createLineBorder(Color.BLACK);
+        // navPanel = new NavPanel();
+
+        mainPanel = new MainPanel(); // This panel SHOULD CHANGE based on what is needed by the user.
+
+        // frame.add(navPanel.navPanel);
+        frame.add(mainPanel);
+
+        mainPanel.setBorder(blackline);
+        mainPanel.showPanel("subPanel1"); 
+        
+
+        
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1200, 800);
-
-        panel = new JPanel();
-
-        frame = setFrameParameters(frame, panel);
+        frame.setVisible(true);
+        frame.setLayout(null);
+        
     } // Contructor
 
-    private JFrame setFrameParameters(JFrame frame, JPanel panel){
-        frame.add(panel);
-        button = new JButton("Open Sub Instance");
-        button.addActionListener(this);
 
-        label = new JLabel("Number of Clicks is: " + count);
-        
-        panel.add(button);
-        panel.add(label);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setTitle("Test Frame");
-        frame.setVisible(true);
-        return frame;
-    } // Setter for the Frame
+    
 
-    @Override
-    public void actionPerformed(ActionEvent e){
-        count++;
-        label.setText("Number of Clicks is: " + count);
-        System.out.print("Number of Clicks is: " + count);
-    } //Action Listener for the Button
+    
 
 
 }
