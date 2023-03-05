@@ -1,25 +1,21 @@
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.BoxLayout;
 
 public class NavPanel extends JPanel{
-    JPanel navPanel;
 
     JButton button1;
-    JButton button2;
-    JButton button3;
-    
     JLabel tempLabel;
 
     public NavPanel(){
-        navPanel = new JPanel();
+        BoxLayout b = new BoxLayout(this, BoxLayout.Y_AXIS);
+        setLayout(b);
 
-        navPanel.add(button1 = new JButton("Button1"));
-        navPanel.add(button2 = new JButton("Button2"));
-        navPanel.add(button3 = new JButton("Button3"));
+        for (int i = 1; i <=5; i++){
+            add(new JButton("Button " + i));
+        }
 
-        navPanel.add(tempLabel = new JLabel("test"));
-
-        System.out.print("Nav Panel Created");
+        System.out.print("Nav Panel Created\n");
     } // Constructor for NavPanel
 }

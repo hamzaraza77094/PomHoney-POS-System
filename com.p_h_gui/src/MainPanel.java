@@ -44,8 +44,9 @@ public class MainPanel extends JPanel{
 
         add(subPanel1, "subPanel1");
         add(subPanel2, "subPanel2");
-
-        System.out.print("Main Panel Created");
+        
+        // showPanel("subPanel1");
+        System.out.print("Main Panel Created\n");
     } // Constructor of Main Panel
 
 
