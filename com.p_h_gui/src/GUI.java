@@ -6,6 +6,15 @@ import javax.swing.BorderFactory;
 
 
 public class GUI extends JFrame{
+    /**
+    * The GUI class creates and displays the initial GUI our program uses 
+    *
+    * @author Adam Vick
+    * @return void
+    * @param void
+    */
+
+
     // private JFrame frame;
     private MainPanel mainPanel;
     private NavPanel navPanel;
@@ -21,9 +30,10 @@ public class GUI extends JFrame{
 
         mainPanel = new MainPanel(); // This panel SHOULD CHANGE based on what is needed by the user.
         mainPanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+
         c.gridx = 1;
         c.gridy = 0;
-        c. gridwidth = 2;
+        c.gridwidth = 2;
         add(mainPanel, c);
 
 
@@ -41,6 +51,13 @@ public class GUI extends JFrame{
         return c;
     } // Moved constraints to clean code
 
+    /** 
+    * setGUIFrame() sets display settings for the GUI frame we use
+    *
+    * @author Adam Vick
+    * @param void
+    * @return void
+    */
     private void setGUIFrame(){
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

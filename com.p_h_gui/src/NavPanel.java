@@ -7,21 +7,35 @@ public class NavPanel extends JPanel{
     JButton buttons[] = new JButton[5];
     JLabel tempLabel;
 
+
+    /** 
+    * NavPanel creates a new 'NavPanel' which will allow the user to navigate throught the application
+
+    @param void This Constuctor does not take in a parameter.
+    @return NavPanel: This Constructor will return a new 'NavPanel' object.
+    */
     public NavPanel(){
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c = setGridBagConstraints(c);
 
-        for (int i = 1; i <= 5; i++){
+        for (int i = 1; i <=5; i++){
             JButton newButton = new JButton("Button " + i);
             c.gridy = i; // Position the first button at row i
             buttons[i - 1] = newButton;
             add(newButton, c);
         }
 
-        System.out.print("Nav Panel Created\n");
+        // System.out.print("Nav Panel Created\n");
     } // Constructor for NavPanel
 
+    /**
+    * The setGridBagConstraints function takes a GridBagConstraints object and adjusts its settings to correctly display the Nav Panel
+    *
+    * @author Adam Vick
+    * @param c
+    * @return c
+    */
     private GridBagConstraints setGridBagConstraints(GridBagConstraints c){
         c.fill = GridBagConstraints.BOTH;
         c.weightx = 1;
