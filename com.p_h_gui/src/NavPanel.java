@@ -72,6 +72,16 @@ public class NavPanel extends JPanel{
             buttons[i - 1] = newButton;
             add(newButton, c);
 
+            if (i == 1) { // Add ActionListener to second button
+                newButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        // Replace the right panel with the manager panel
+                        GUI gui = (GUI) SwingUtilities.getWindowAncestor(NavPanel.this);
+                        JSplitPane splitPane = (JSplitPane) gui.getContentPane().getComponent(0);
+                        splitPane.setRightComponent(new MainPanel());
+                    }
+                });
+            }
             if (i == 2) { // Add ActionListener to second button
                 newButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
