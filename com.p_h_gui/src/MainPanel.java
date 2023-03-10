@@ -306,12 +306,54 @@ public class MainPanel extends JPanel{
         submitOrder_Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
+
+                System.out.println("Calling the function here");
+                double orderSubtotal = calculateTotal(getOrderItemsArray());
+
+                double salesTax = orderSubtotal * 0.0625;
+                double total = orderSubtotal + salesTax;
+
+        // insert the order into the salesBridge table
                 // TODO: Communicate with db and decrement ingredients based on preset ingredient constants for each menu item
                 int current_Array_Size = order_Items_Array.size();
                 try {
                     conn = DriverManager.getConnection("jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_epsilon", "csce315331_epsilon_master", "EPSILON");   
+                    Statement stmt = conn.createStatement();
+                    // String insertQuery = "INSERT INTO salesBridge (orderid, dayid, date, ordercontents, ordersubtotal, salestax, total) VALUES (" +
+                    //     "(SELECT MAX(orderid)+1 FROM salesBridge), " +
+                    //     "(SELECT MAX(dayid) FROM salesBridge WHERE date = DATE(NOW())), " +
+                    //     "NOW(), " +
+                    //     "'" + order_string + "', " +
+                    //     "'" + String.valueOf(orderSubtotal) + "', " +
+                    //     "'" + String.valueOf(salesTax) + "', " +
+                    //     "'" + String.valueOf(total) + "'" +
+                    //     ")";
+                    // String insertQuery = "INSERT INTO salesBridge (orderid, dayid, date, ordercontents, ordersubtotal, salestax, total) VALUES (" +
+                    //     "(SELECT MAX(orderid)+1 FROM salesBridge), " +
+                    //     "COALESCE((SELECT MAX(dayid) FROM salesBridge WHERE date = DATE(NOW())), 1), " +
+                    //     "NOW(), " +
+                        // "'" + order_string + "', " +
+                        // "'" + String.valueOf(orderSubtotal) + "', " +
+                        // "'" + String.valueOf(salesTax) + "', " +
+                        // "'" + String.valueOf(total) + "'" +
+                        // ")";
+                    String insertQuery = "INSERT INTO salesBridge (orderid, dayid, date, ordercontents, ordersubtotal, salestax, total) " +
+                     "VALUES (COALESCE((SELECT MAX(orderid) FROM salesBridge), 0) + 1, " +
+                             "COALESCE((SELECT MAX(dayid) FROM salesBridge WHERE date = CURRENT_DATE), " +
+                                      "(SELECT COALESCE(MAX(dayid), 0) + 1 FROM salesBridge)), " +
+                             "CURRENT_DATE, " +
+                             "'" + order_string + "', " +
+                             "'" + String.valueOf(orderSubtotal) + "', " +
+                             "'" + String.valueOf(salesTax) + "', " +
+                             "'" + String.valueOf(total) + "'" +
+                             ")";
+
+
+
+
+                    stmt.executeUpdate(insertQuery);
                 } catch (SQLException ex) {
-                    System.out.println("Could not open database successfully");
+                    System.out.println("Could not open database successfully" + ex.getMessage());
                     return;
                 }
                 System.out.println("Opened database successfully");
@@ -319,8 +361,7 @@ public class MainPanel extends JPanel{
 
         // Print out the contents in the array
         // ArrayList<Integer> order_Items_Array_copy = (ArrayList<Integer>) order_Items_Array.clone();
-        System.out.println("Calling the function here");
-        calculateTotal(getOrderItemsArray());
+        
 
 
 
