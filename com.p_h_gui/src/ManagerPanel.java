@@ -179,51 +179,51 @@ public class ManagerPanel extends JPanel{
                     }
                 });
                 // Create a panel for the "Update Item" button
-JPanel updatePanel = new JPanel();
-JButton updateButton = new JButton("Update Item");
-updatePanel.add(updateButton);
+            JPanel updatePanel = new JPanel();
+            JButton updateButton = new JButton("Update Item");
+            updatePanel.add(updateButton);
 
-// Add the "Update Item" button to the panel
-add(updatePanel);
+            // Add the "Update Item" button to the panel
+            add(updatePanel);
 
-updateButton.addActionListener(new ActionListener() {
-    public void actionPerformed(ActionEvent e) {
-        // Prompt user to input item_id of the item to be updated
-        String itemIdStr = JOptionPane.showInputDialog("Enter item ID:");
+            updateButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    // Prompt user to input item_id of the item to be updated
+                    String itemIdStr = JOptionPane.showInputDialog("Enter item ID:");
 
-        // Prompt user to input new values for the item
-        String itemName = JOptionPane.showInputDialog("Enter new item name:");
-        String amountStr = JOptionPane.showInputDialog("Enter new item amount:");
-        String measurementType = JOptionPane.showInputDialog("Enter new item measurement type:");
+                    // Prompt user to input new values for the item
+                    String itemName = JOptionPane.showInputDialog("Enter new item name:");
+                    String amountStr = JOptionPane.showInputDialog("Enter new item amount:");
+                    String measurementType = JOptionPane.showInputDialog("Enter new item measurement type:");
 
-        // Update item in the inventory table with the given item_id
-        PreparedStatement pstmt = null;
-        try {
-            Connection conn = Login.getConnection();
-            pstmt = conn.prepareStatement("UPDATE inventory SET item_name = ?, item_amount = ?, item_measurement_type = ? WHERE item_id = ?");
-            pstmt.setString(1, itemName);
-            pstmt.setInt(2, Integer.parseInt(amountStr));
-            pstmt.setString(3, measurementType);
-            pstmt.setInt(4, Integer.parseInt(itemIdStr));
-            pstmt.executeUpdate();
+                    // Update item in the inventory table with the given item_id
+                    PreparedStatement pstmt = null;
+                    try {
+                        Connection conn = Login.getConnection();
+                        pstmt = conn.prepareStatement("UPDATE inventory SET item_name = ?, item_amount = ?, item_measurement_type = ? WHERE item_id = ?");
+                        pstmt.setString(1, itemName);
+                        pstmt.setInt(2, Integer.parseInt(amountStr));
+                        pstmt.setString(3, measurementType);
+                        pstmt.setInt(4, Integer.parseInt(itemIdStr));
+                        pstmt.executeUpdate();
 
-            pstmt.close();
-        } catch (SQLException ex) {
-            System.out.println("Error connecting to database: " + ex.getMessage());
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException ex) {
-                    System.out.println("Error closing database connection: " + ex.getMessage());
+                        pstmt.close();
+                    } catch (SQLException ex) {
+                        System.out.println("Error connecting to database: " + ex.getMessage());
+                    } finally {
+                        if (conn != null) {
+                            try {
+                                conn.close();
+                            } catch (SQLException ex) {
+                                System.out.println("Error closing database connection: " + ex.getMessage());
+                            }
+                        }
+                    }
+
+                    // Refresh the inventory table
+                    inventoryButton.doClick();
                 }
-            }
-        }
-
-        // Refresh the inventory table
-        inventoryButton.doClick();
-    }
-});
+            });
 
 
                 // Update the panel

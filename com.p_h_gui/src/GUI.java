@@ -12,6 +12,7 @@ public class GUI extends JFrame{
     // private JFrame frame;
     private MainPanel mainPanel;
     private NavPanel navPanel;
+    private ManagerPanel managerPanel = null;
    
     // public GUI(){
     //     setLayout(new GridBagLayout());
@@ -33,12 +34,15 @@ public class GUI extends JFrame{
     //     setGUIFrame();
         
     // } // Contructor
-    public GUI() {
+    public GUI(boolean isManager) {
         super("My Restaurant");
     
         // Create the NavPanel and ManagerPanel
-        NavPanel navPanel = new NavPanel();
-        ManagerPanel managerPanel = new ManagerPanel();
+        NavPanel navPanel = new NavPanel(isManager);
+        if(isManager){
+            ManagerPanel managerPanel = new ManagerPanel();
+        }
+        
     
         // Create a JSplitPane and add the NavPanel and ManagerPanel to it
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, navPanel, new JPanel());
@@ -56,12 +60,15 @@ public class GUI extends JFrame{
         setVisible(true);
     
         // Handle button clicks in the NavPanel
-        navPanel.buttons[1].addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                splitPane.setRightComponent(managerPanel);
-                splitPane.setDividerLocation(150);
-            }
-        });
+        if (isManager){
+            navPanel.buttons[1].addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    splitPane.setRightComponent(managerPanel);
+                    splitPane.setDividerLocation(150);
+                }
+            });
+        }
+        
     }
     
     private GridBagConstraints setGridBagConstraints(GridBagConstraints c){
