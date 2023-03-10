@@ -319,24 +319,6 @@ public class MainPanel extends JPanel{
                 try {
                     conn = DriverManager.getConnection("jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_epsilon", "csce315331_epsilon_master", "EPSILON");   
                     Statement stmt = conn.createStatement();
-                    // String insertQuery = "INSERT INTO salesBridge (orderid, dayid, date, ordercontents, ordersubtotal, salestax, total) VALUES (" +
-                    //     "(SELECT MAX(orderid)+1 FROM salesBridge), " +
-                    //     "(SELECT MAX(dayid) FROM salesBridge WHERE date = DATE(NOW())), " +
-                    //     "NOW(), " +
-                    //     "'" + order_string + "', " +
-                    //     "'" + String.valueOf(orderSubtotal) + "', " +
-                    //     "'" + String.valueOf(salesTax) + "', " +
-                    //     "'" + String.valueOf(total) + "'" +
-                    //     ")";
-                    // String insertQuery = "INSERT INTO salesBridge (orderid, dayid, date, ordercontents, ordersubtotal, salestax, total) VALUES (" +
-                    //     "(SELECT MAX(orderid)+1 FROM salesBridge), " +
-                    //     "COALESCE((SELECT MAX(dayid) FROM salesBridge WHERE date = DATE(NOW())), 1), " +
-                    //     "NOW(), " +
-                        // "'" + order_string + "', " +
-                        // "'" + String.valueOf(orderSubtotal) + "', " +
-                        // "'" + String.valueOf(salesTax) + "', " +
-                        // "'" + String.valueOf(total) + "'" +
-                        // ")";
                     String insertQuery = "INSERT INTO salesBridge (orderid, dayid, date, ordercontents, ordersubtotal, salestax, total) " +
                      "VALUES (COALESCE((SELECT MAX(orderid) FROM salesBridge), 0) + 1, " +
                              "COALESCE((SELECT MAX(dayid) FROM salesBridge WHERE date = CURRENT_DATE), " +
