@@ -623,6 +623,7 @@ public class MainPanel extends JPanel{
                     }
                 }
                 order_Items_Array.clear();
+                order_string = "";
                 showMainPanel("checkoutPanel");
             }
         });
