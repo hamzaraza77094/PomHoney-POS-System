@@ -43,6 +43,17 @@ public class NavPanel extends JPanel{
                     }
                 });
             }
+            if (i == 3) { // Add ActionListener to second button
+                newButton.setText("Sales");
+                newButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        // Replace the right panel with the manager panel
+                        GUI gui = (GUI) SwingUtilities.getWindowAncestor(NavPanel.this);
+                        JSplitPane splitPane = (JSplitPane) gui.getContentPane().getComponent(0);
+                        splitPane.setRightComponent(new ManagerPanel());
+                    }
+                });
+            }
             else if (i == 5) { // Add ActionListener to fifth button
                 newButton.setText("Logout");
                 newButton.addActionListener(new ActionListener() {

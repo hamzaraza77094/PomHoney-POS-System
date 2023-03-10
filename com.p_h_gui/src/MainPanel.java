@@ -32,6 +32,7 @@ public class MainPanel extends JPanel{
 
     // Array containing the item ID's of what is added to the order
     ArrayList<Integer> order_Items_Array = new ArrayList<Integer>(50);
+    ArrayList<Integer> order_Items_Array_copy = new ArrayList<Integer>(50);
 
     private Connection conn;
 
@@ -313,8 +314,20 @@ public class MainPanel extends JPanel{
                     return;
                 }
                 System.out.println("Opened database successfully");
+                // Print out the contents in the array
+        for (int i = 0; i < order_Items_Array.size(); i++) {
+            order_string += order_Items_Array.get(i) + " ";
+        }
 
-                
+        // Print out the contents in the array
+        System.out.println(order_string);
+        System.out.println(order_Items_Array);
+        // ArrayList<Integer> order_Items_Array_copy = (ArrayList<Integer>) order_Items_Array.clone();
+
+        System.out.println("Copy:");
+        // System.out.println(order_Items_Array_copy);
+        getOrderItemsArray(order_Items_Array);
+
 
 
 
@@ -621,8 +634,27 @@ public class MainPanel extends JPanel{
         cartPanel.add(back_Button4);
         this.add(cartPanel, "cartPanel");
 
+
+        System.out.println("After");
+        System.out.println(order_Items_Array);
+        System.out.println("Copy After:");
+        System.out.println(order_Items_Array_copy);
+
+        
+
     } // Constructor of Main Panel
 
+    public ArrayList<Integer> getOrderItemsArray(ArrayList<Integer> order_Items_Array) {
+        System.out.println("In Function");
+        ArrayList<Integer> order_Items_Array_copy = new ArrayList<Integer>();
+        for (Integer item : this.order_Items_Array) {
+            order_Items_Array_copy.add(item);
+        }
+        System.out.println(order_Items_Array_copy);
+        return order_Items_Array_copy;
+    }
+    
+    
     /**
     This is a quick function to change the panel that is displayed in the 'MainPanel'. This fucntion uses the 
     'show' method associated with the 'Cardlayout mainCardLayout'. Further, it will update 'lastPanel' to the panel that was 
