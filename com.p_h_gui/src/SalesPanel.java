@@ -137,7 +137,7 @@ private JButton createDeleteButton() {
 
             try {
                 Connection conn = Login.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement("DELETE FROM dailySales WHERE orderid = ?");
+                PreparedStatement pstmt = conn.prepareStatement("DELETE FROM salesbridge WHERE orderid = ?");
                 pstmt.setInt(1, orderId);
                 pstmt.executeUpdate();
 

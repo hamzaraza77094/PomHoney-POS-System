@@ -28,7 +28,7 @@ public class NavPanel extends JPanel{
                         // Replace the right panel with the manager panel
                         GUI gui = (GUI) SwingUtilities.getWindowAncestor(NavPanel.this);
                         JSplitPane splitPane = (JSplitPane) gui.getContentPane().getComponent(0);
-                        splitPane.setRightComponent(new MainPanel());
+                        splitPane.setRightComponent(new CartFeature());
                     }
                 });
             }
@@ -81,7 +81,7 @@ public class NavPanel extends JPanel{
                         // Replace the right panel with the manager panel
                         GUI gui = (GUI) SwingUtilities.getWindowAncestor(NavPanel.this);
                         JSplitPane splitPane = (JSplitPane) gui.getContentPane().getComponent(0);
-                        splitPane.setRightComponent(new MainPanel());
+                        splitPane.setRightComponent(new CartFeature());
                     }
                 });
             }
