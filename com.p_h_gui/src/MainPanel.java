@@ -1,3 +1,4 @@
+import java.text.DecimalFormat;
 // import javax.swing.JPanel;
 import javax.swing.*;
 // import javax.swing.Action;
@@ -31,7 +32,8 @@ public class MainPanel extends JPanel{
     public String lastPanel; //TODO: Wanted to use this to record what the last panel was so I could have a back button.
 
     // Array containing the item ID's of what is added to the order
-    ArrayList<Integer> order_Items_Array = new ArrayList<Integer>(50);
+    public ArrayList<Integer> order_Items_Array = new ArrayList<Integer>(50);
+    public ArrayList<Integer> order_Items_Array_copy = new ArrayList<Integer>(50);
 
     private Connection conn;
 
@@ -291,7 +293,7 @@ public class MainPanel extends JPanel{
         lastPanel = checkoutPanel.getName();
         showMainPanel("checkoutPanel");
 
-        CartPanel new_cart = new CartPanel();
+        // CartPanel new_cart = new CartPanel();
 
         // DEFINING CART PANEL WITHIN MAIN PANEL
         cartPanel = new JPanel();
@@ -304,17 +306,45 @@ public class MainPanel extends JPanel{
         submitOrder_Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
+
+                System.out.println("Calling the function here");
+                double orderSubtotal = calculateTotal(getOrderItemsArray());
+
+                double salesTax = orderSubtotal * 0.0625;
+                double total = orderSubtotal + salesTax;
+
+        // insert the order into the salesBridge table
                 // TODO: Communicate with db and decrement ingredients based on preset ingredient constants for each menu item
                 int current_Array_Size = order_Items_Array.size();
                 try {
                     conn = DriverManager.getConnection("jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_epsilon", "csce315331_epsilon_master", "EPSILON");   
+                    Statement stmt = conn.createStatement();
+                    String insertQuery = "INSERT INTO salesBridge (orderid, dayid, date, ordercontents, ordersubtotal, salestax, total) " +
+                     "VALUES (COALESCE((SELECT MAX(orderid) FROM salesBridge), 0) + 1, " +
+                             "COALESCE((SELECT MAX(dayid) FROM salesBridge WHERE date = CURRENT_DATE), " +
+                                      "(SELECT COALESCE(MAX(dayid), 0) + 1 FROM salesBridge)), " +
+                             "CURRENT_DATE, " +
+                             "'" + order_string + "', " +
+                             "'" + String.valueOf(orderSubtotal) + "', " +
+                             "'" + String.valueOf(salesTax) + "', " +
+                             "'" + String.valueOf(total) + "'" +
+                             ")";
+
+
+
+
+                    stmt.executeUpdate(insertQuery);
                 } catch (SQLException ex) {
-                    System.out.println("Could not open database successfully");
+                    System.out.println("Could not open database successfully" + ex.getMessage());
                     return;
                 }
                 System.out.println("Opened database successfully");
+                // Print out the contents in the array
 
-                
+        // Print out the contents in the array
+        // ArrayList<Integer> order_Items_Array_copy = (ArrayList<Integer>) order_Items_Array.clone();
+        
+
 
 
 
@@ -593,6 +623,7 @@ public class MainPanel extends JPanel{
                     }
                 }
                 order_Items_Array.clear();
+                order_string = "";
                 showMainPanel("checkoutPanel");
             }
         });
@@ -621,8 +652,60 @@ public class MainPanel extends JPanel{
         cartPanel.add(back_Button4);
         this.add(cartPanel, "cartPanel");
 
+
+        System.out.println("After");
+        System.out.println(order_Items_Array);
+        System.out.println("Copy After:");
+        System.out.println(order_Items_Array_copy);
+
+
+
+    
+
+
+
+
+        
+
     } // Constructor of Main Panel
 
+    public ArrayList<Integer> getOrderItemsArray() {
+        System.out.println("In Function");
+        ArrayList<Integer> order_Items_Array_copy = new ArrayList<Integer>();
+        for (Integer item : this.order_Items_Array) {
+            order_Items_Array_copy.add(item);
+        }
+        System.out.println(order_Items_Array_copy);
+        return order_Items_Array_copy;
+    }
+
+    public double calculateTotal(ArrayList<Integer> items) {
+        double subtotal = 0.0;
+        for (int i = 0; i < items.size(); i++) {
+            int item = items.get(i);
+            if (item == 1 || item == 2 || item == 8 || item == 9) {
+                subtotal += 8.09;
+            } else if (item == 3 || item == 4) {
+                subtotal += 3.49;
+            } else if (item == 5) {
+                subtotal += 2.49;
+            } else if (item == 6) {
+                subtotal += 0.49;
+            } else if (item == 7) {
+                subtotal += 2.45;
+            }
+        }
+        DecimalFormat df = new DecimalFormat("#.##");
+        String roundedTotal = df.format(subtotal);
+        double roundedTotalDouble = Double.parseDouble(roundedTotal);
+
+        System.out.println("Function total");
+        System.out.println(subtotal);
+        return subtotal;
+    }
+    
+
+    
     /**
     This is a quick function to change the panel that is displayed in the 'MainPanel'. This fucntion uses the 
     'show' method associated with the 'Cardlayout mainCardLayout'. Further, it will update 'lastPanel' to the panel that was 

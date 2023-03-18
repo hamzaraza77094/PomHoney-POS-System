@@ -3,26 +3,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-
 public class Login extends JFrame implements ActionListener {
-    /**
-    * Login is a class used to display a screen which will take an employees 'employee_id', query the csce315331_epsilon database,
-    * if the employee_id is correct, then the user is allowed access. Else, is denied to try again.
-    *
-    * @author Cameron Yoffe
-    * @return void
-    * @param void
-    * @throws SQLException if the connection to the database fails
-    * @throws Exception if the query to the database fails
-    */
-
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;
     private Connection conn;
     private JPanel numberPad;
     private String password = "";
-    
 
     public Login() {
         super("Login");
@@ -60,13 +47,7 @@ public class Login extends JFrame implements ActionListener {
 
         // establish database connection
     }
-    /**
-    * actionPerformed is a override from the ActionEvent class which gives functionallity to the 'loginButton'. This is where 'Login'
-    * gains access to the 'csce315331_epsilon' database.
 
-    * @param ActionEvent e: This is the trigger for the users action on a button on the 'Login' Frame.
-    * @return void: This function does not return anything, however, it does start a GUI() instance.
-    */
     public void actionPerformed(ActionEvent e) {
         String button = e.getActionCommand();
         if (button.equals("<-")) {
@@ -90,12 +71,12 @@ public class Login extends JFrame implements ActionListener {
                 System.out.println("Could not open database successfully");
                 return;
             }
-            System.out.println("Opened database successfully");
-            //SQL statement for finding the employee ID
             boolean isManager = false;
+
+            System.out.println("Opened database successfully");
+            // SQL statement for finding the employee ID
             try {
                 String query = "SELECT * FROM employees WHERE employee_id = " + password;
-                //System.out.println(query);
                 Statement stmt = conn.createStatement();
                 ResultSet resultSet = stmt.executeQuery(query);
                 if (!resultSet.next()) {
@@ -103,13 +84,11 @@ public class Login extends JFrame implements ActionListener {
                     password = "";
                     passwordField.setText("");
                     return;
-                }else{
-                    String employee_name = resultSet.getString("employeename");
-                    if (employee_name.equals("Karen")) {
-                        isManager = true;
-                    }
+                } else {
+                    isManager = resultSet.getBoolean("ismanager");
+                    String employeeName = resultSet.getString("employeename");
 
-                    JOptionPane.showMessageDialog(null, "Login successful, welcome " + resultSet.getString("employeename"));
+                    JOptionPane.showMessageDialog(null, "Login successful, welcome " + employeeName);
                     setVisible(false); // hide the login window
                 }
             } catch(Exception ex){
@@ -118,13 +97,12 @@ public class Login extends JFrame implements ActionListener {
                 System.exit(0);
             }
             // create a new instance of the dashboard window
-            if (isManager == true) {
-                // manager view
-                System.out.println("Manager has logged in");
-                System.exit(0);
-            } else {
-                new GUI();
-            }
+            new GUI(isManager);
         }
+    }
+
+    public static Connection getConnection() throws SQLException {
+        Connection conn = DriverManager.getConnection("jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_epsilon", "csce315331_epsilon_master", "EPSILON");
+        return conn;
     }
 }
