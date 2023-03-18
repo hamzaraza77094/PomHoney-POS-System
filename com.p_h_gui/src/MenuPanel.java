@@ -46,7 +46,7 @@ public class MenuPanel extends JPanel {
         try {
             Connection conn = Login.getConnection();
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM menu");
+            ResultSet rs = stmt.executeQuery("select * from menu Order by menu_item_id");
     
             while (rs.next()) {
                 int itemId = rs.getInt("menu_item_id");
@@ -210,7 +210,7 @@ public class MenuPanel extends JPanel {
         try {
             conn = Login.getConnection();
             stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT * FROM Menu");
+            rs = stmt.executeQuery("select * from menu Order by menu_item_id");
     
             while (rs.next()) {
                 int itemId = rs.getInt("menu_item_id");
