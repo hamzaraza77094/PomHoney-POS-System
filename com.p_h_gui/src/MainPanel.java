@@ -39,6 +39,11 @@ public class MainPanel extends JPanel{
 
     String order_string = "";
 
+    // public ArrayList<Integer> ingredients_ID_Array = new ArrayList<Integer>(50);
+    // public ArrayList<Integer> ingredients_Amount_Array = new ArrayList<Float>(50);
+    Integer ingredients_ID_Array[];
+    Double ingredients_Amount_Array[];
+
     JTextField myOutput = new JTextField(100);
 
 
@@ -266,14 +271,12 @@ public class MainPanel extends JPanel{
         extrasPanel.add(back_Button2);
         add(extrasPanel, "extrasPanel");
 
-      //Drinks Menu TODO: MOVE TO ANOTHER CLASS TO CLEAN UP CODE
         JPanel drinksPanel = new JPanel();
         
         JButton drink_Button = new JButton("Soft Drink");
         drink_Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
-                // showMainPanel("entreesPanel");
                 order_Items_Array.add(7);
             }
         });
@@ -293,12 +296,9 @@ public class MainPanel extends JPanel{
         lastPanel = checkoutPanel.getName();
         showMainPanel("checkoutPanel");
 
-        // CartPanel new_cart = new CartPanel();
 
-        // DEFINING CART PANEL WITHIN MAIN PANEL
         cartPanel = new JPanel();
 
-        // TODO: Communicate with db and display item names corresponding to array of item IDs
         myOutput.setText(order_string);
         cartPanel.add(myOutput);
 
@@ -307,7 +307,7 @@ public class MainPanel extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e){
 
-                System.out.println("Calling the function here");
+                // System.out.println("Calling the function here");
                 double orderSubtotal = calculateTotal(getOrderItemsArray());
 
                 double salesTax = orderSubtotal * 0.0625;
@@ -329,299 +329,15 @@ public class MainPanel extends JPanel{
                              "'" + String.valueOf(salesTax) + "', " +
                              "'" + String.valueOf(total) + "'" +
                              ")";
-
-
-
-
                     stmt.executeUpdate(insertQuery);
                 } catch (SQLException ex) {
                     System.out.println("Could not open database successfully" + ex.getMessage());
                     return;
                 }
                 System.out.println("Opened database successfully");
-                // Print out the contents in the array
-
-        // Print out the contents in the array
-        // ArrayList<Integer> order_Items_Array_copy = (ArrayList<Integer>) order_Items_Array.clone();
         
+                detractIngredients(order_Items_Array);
 
-
-
-
-                for (int i = 0; i < current_Array_Size; ++i) {
-                    // ------------------------
-                    // if  item is chicken gyro
-                    // ------------------------
-                    if (order_Items_Array.get(i) == 1) { 
-                        // detract 1 pita bread
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 1 WHERE item_id = " + 1;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.25 pounds chicken
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.25 WHERE item_id = " + 3;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.25 head lettuce
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.25 WHERE item_id = " + 4;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.5 onion
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.5 WHERE item_id = " + 5;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.01 pound garlic
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.01 WHERE item_id = " + 7;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.05 gallons tzatziki sauce
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.05 WHERE item_id = " + 16;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.1 pounds rice
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.1 WHERE item_id = " + 17;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-                    // -----------------------
-                    // if item is chicken bowl
-                    // -----------------------
-                    } else if (order_Items_Array.get(i) == 2) {
-                        // detract 1 bowl
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 1 WHERE item_id = " + 19;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.25 pounds chicken
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.25 WHERE item_id = " + 3;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.25 head lettuce
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.25 WHERE item_id = " + 4;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.5 onion
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.5 WHERE item_id = " + 5;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.01 pound garlic
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.01 WHERE item_id = " + 7;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.05 gallons tzatziki sauce
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.05 WHERE item_id = " + 16;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.1 pounds rice
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.1 WHERE item_id = " + 17;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-                    // --------------------------
-                    // if item is hummus and pita
-                    // --------------------------
-                    } else if (order_Items_Array.get(i) == 3) {
-                        // detract 1 pita bread
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 1 WHERE item_id = " + 1;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.01 gallons hummus
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.02 WHERE item_id = " + 15;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-                    // ---------------------
-                    // if item is 2 falafals
-                    // ---------------------
-                    } else if (order_Items_Array.get(i) == 4) { 
-                        // detract 2 falafels
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 2 WHERE item_id = " + 23;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-                    // ------------------------
-                    // if item is extra protein
-                    // ------------------------
-                    } else if (order_Items_Array.get(i) == 5) { 
-                        // detract 0.25 pounds chicken if extra protein selected after chicken gyro or chicken bowl
-                        if (!(order_Items_Array.get(i) == 0)) {
-                            if ((order_Items_Array.get(i-1) == 1) || (order_Items_Array.get(i-1) == 2)) {
-                                try {
-                                    String query = "UPDATE inventory SET item_amount = item_amount - 0.25 WHERE item_id = " + 3;
-                                    Statement stmt = conn.createStatement();
-                                    ResultSet resultSet = stmt.executeQuery(query);
-                                } catch(Exception ex){}                            
-                            } else if ((order_Items_Array.get(i-1) == 8) || (order_Items_Array.get(i-1) == 9)) {
-                                try {
-                                    String query = "UPDATE inventory SET item_amount = item_amount - 0.25 WHERE item_id = " + 2;
-                                    Statement stmt = conn.createStatement();
-                                    ResultSet resultSet = stmt.executeQuery(query);
-                                } catch(Exception ex){}                               }
-                        }
-                    // ------------------------
-                    // if item is extra dressing
-                    // ------------------------
-                    } else if (order_Items_Array.get(i) == 6) {
-                        // detract 0.05 gallon tzatziki sauce
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.05 WHERE item_id = " + 16;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-                    // -------------------------
-                    // if item is fountain drink
-                    // -------------------------
-                    } else if (order_Items_Array.get(i) == 7) {
-                        try {
-                            // detract 1 soda cup
-                            String query = "UPDATE inventory SET item_amount = item_amount - 1 WHERE item_id = " + 24;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-                    // --------------------
-                    // if item is lamb gyro
-                    // --------------------
-                    } else if (order_Items_Array.get(i) == 8) { 
-                        // detract 1 pita bread
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 1 WHERE item_id = " + 1;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.25 pounds lamb
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.25 WHERE item_id = " + 2;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.25 head lettuce
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.25 WHERE item_id = " + 4;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.5 onion
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.5 WHERE item_id = " + 5;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.01 pound garlic
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.01 WHERE item_id = " + 7;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.05 gallons tzatziki sauce
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.05 WHERE item_id = " + 16;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.1 pounds rice
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.1 WHERE item_id = " + 17;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-                    } else if (order_Items_Array.get(i) == 9) { // if item is lamb bowl
-                        // detract 1 bowl
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 1 WHERE item_id = " + 19;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.25 pounds lamb
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.25 WHERE item_id = " + 2;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.25 head lettuce
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.25 WHERE item_id = " + 4;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.5 onion
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.5 WHERE item_id = " + 5;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.01 pound garlic
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.01 WHERE item_id = " + 7;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.05 gallons tzatziki sauce
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.05 WHERE item_id = " + 16;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-
-                        // detract 0.1 pounds rice
-                        try {
-                            String query = "UPDATE inventory SET item_amount = item_amount - 0.1 WHERE item_id = " + 17;
-                            Statement stmt = conn.createStatement();
-                            ResultSet resultSet = stmt.executeQuery(query);
-                        } catch(Exception ex){}
-                    }
-                }
                 order_Items_Array.clear();
                 order_string = "";
                 showMainPanel("checkoutPanel");
@@ -651,24 +367,9 @@ public class MainPanel extends JPanel{
         cartPanel.add(resetOrder_Button);
         cartPanel.add(back_Button4);
         this.add(cartPanel, "cartPanel");
+    }
 
-
-        System.out.println("After");
-        System.out.println(order_Items_Array);
-        System.out.println("Copy After:");
-        System.out.println(order_Items_Array_copy);
-
-
-
-    
-
-
-
-
-        
-
-    } // Constructor of Main Panel
-
+    // getter for order_Items_Array
     public ArrayList<Integer> getOrderItemsArray() {
         System.out.println("In Function");
         ArrayList<Integer> order_Items_Array_copy = new ArrayList<Integer>();
@@ -679,6 +380,7 @@ public class MainPanel extends JPanel{
         return order_Items_Array_copy;
     }
 
+    // function for calculating total
     public double calculateTotal(ArrayList<Integer> items) {
         double subtotal = 0.0;
         for (int i = 0; i < items.size(); i++) {
@@ -704,6 +406,52 @@ public class MainPanel extends JPanel{
         return subtotal;
     }
     
+    // function for detracting ingredients for each item ordered
+    public void detractIngredients(ArrayList<Integer> order_Items) { 
+        for (int i = 0; i < order_Items.size(); ++i) {
+            if (order_Items.get(i) == 1) { // chicken gyro
+                ingredients_ID_Array = new Integer[] {1, 3, 4, 5, 7, 16, 17};
+                ingredients_Amount_Array = new Double[] {1.0, 0.25, 0.25, 0.5, 0.01, 0.05, 0.1};
+            } else if (order_Items.get(i) == 2) { // chicken bowl
+                ingredients_ID_Array = new Integer[] {19, 3, 4, 5, 7, 16, 17};
+                ingredients_Amount_Array = new Double[] {1.0, 0.25, 0.25, 0.5, 0.01, 0.05, 0.1};
+            } else if (order_Items.get(i) == 3) { // hummus and pita
+                ingredients_ID_Array = new Integer[] {1, 15, 23};
+                ingredients_Amount_Array = new Double[] {1.0, 0.02, 2.0};
+            } else if (order_Items.get(i) == 4) { // 2 falalfels
+                ingredients_ID_Array = new Integer[] {23};
+                ingredients_Amount_Array = new Double[] {2.0};
+            } else if (order_Items.get(i) == 5) { // extra protein
+                if ((order_Items.get(i-1) == 1) || (order_Items.get(i-1) == 2)) {
+                    ingredients_ID_Array = new Integer[] {3};
+                    ingredients_Amount_Array = new Double[] {0.25};
+                } else if ((order_Items.get(i-1) == 8) || (order_Items.get(i-1) == 9)) {
+                    ingredients_ID_Array = new Integer[] {2};
+                    ingredients_Amount_Array = new Double[] {0.25};
+                }
+            } else if (order_Items.get(i) == 6) { // extra dressing
+                ingredients_ID_Array = new Integer[] {16};
+                ingredients_Amount_Array = new Double[] {0.05};
+            } else if (order_Items.get(i) == 7) { // fountain drink
+                ingredients_ID_Array = new Integer[] {24};
+                ingredients_Amount_Array = new Double[] {1.0};
+            } else if (order_Items.get(i) == 8) { // lamb gyro
+                ingredients_ID_Array = new Integer[] {1, 2, 4, 5, 7, 16, 17};
+                ingredients_Amount_Array = new Double[] {1.0, 0.25, 0.25, 0.5, 0.01, 0.05, 0.1};
+            } else if (order_Items.get(i) == 9) { // lamb bowl
+                ingredients_ID_Array = new Integer[] {19, 2, 4, 5, 7, 16, 17};
+                ingredients_Amount_Array = new Double[] {1.0, 0.25, 0.25, 0.5, 0.01, 0.05, 0.1};
+            }
+
+            for (int j = 0; j < ingredients_ID_Array.length; ++j) {
+                try {
+                    String query = "UPDATE inventory SET item_amount = item_amount - " + ingredients_Amount_Array[j] + " WHERE item_id = " + ingredients_ID_Array[j];
+                    Statement stmt = conn.createStatement();
+                    ResultSet resultSet = stmt.executeQuery(query);
+                } catch(Exception ex){}
+            }
+        }
+    }
 
     
     /**
