@@ -43,13 +43,15 @@ public class CartFeature extends JPanel {
         totalsPanel.add(grandTotalLabel);
         add(totalsPanel, BorderLayout.EAST);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 3));
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 4));
         JButton addButton = createAddButton();
         JButton deleteButton = createDeleteButton();
+        JButton resetCartButton = createResetCartButton();
         JButton submitOrderButton = createSubmitOrderButton();
 
         buttonPanel.add(addButton);
         buttonPanel.add(deleteButton);
+        buttonPanel.add(resetCartButton);
         buttonPanel.add(submitOrderButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
@@ -208,6 +210,8 @@ public class CartFeature extends JPanel {
                 detractIngredients(selectedItemIds);
     
                 menuItemIds.clear();
+
+                clearCart(); // Clear the cart after the order is submitted
                 // refreshCartTable();
                 updateTotals();
     
@@ -267,6 +271,24 @@ public class CartFeature extends JPanel {
             }
         }
     }
+
+    private void clearCart() {
+        DefaultTableModel cartModel = (DefaultTableModel) CartTable.getModel();
+        cartModel.setRowCount(0);
+    }
+
+    // Create and configure the Reset Cart button
+    private JButton createResetCartButton() {
+        JButton resetCartButton = new JButton("Reset Cart");
+
+        resetCartButton.addActionListener(e -> {
+            clearCart();
+            updateTotals();
+        });
+
+        return resetCartButton;
+    }
+
 
     
     
