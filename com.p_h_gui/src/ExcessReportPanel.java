@@ -3,12 +3,12 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.*;
 
-public class DailySalesPanel extends JPanel {
+public class ExcessReportPanel extends JPanel {
 
     private JTable dailySalesTable;
     private JScrollPane scrollPane;
 
-    public DailySalesPanel() {
+    public ExcessReportPanel() {
         initComponents();
     }
 
@@ -20,16 +20,13 @@ public class DailySalesPanel extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
     
         JPanel buttonPanel = new JPanel(new GridLayout(1, 4));
-        JButton addButton = createAddButton();
-        JButton deleteButton = createDeleteButton();
-        JButton updateButton = createUpdateButton();
-    
-        buttonPanel.add(addButton);
-        buttonPanel.add(deleteButton);
-        buttonPanel.add(updateButton);
+        JButton excessReportButton = createExcessReportButton();
+
+        buttonPanel.add(excessReportButton);
     
         add(buttonPanel, BorderLayout.SOUTH);
     }
+    
     private JTable createDailySalesTable() {
         DefaultTableModel model = new DefaultTableModel();
         JTable table = new JTable(model);
@@ -187,6 +184,28 @@ public class DailySalesPanel extends JPanel {
         return updateButton;
     }
     
+    private JButton createExcessReportButton() {
+        JButton exButt = new JButton(); //Man I never want see this again.
+
+        exButt.addActionListener(e -> {
+            // 1) Prompt the user for a start date.
+
+            // 2) For every date in the timeframe: start date to -> current date...
+            //    i) get order const str
+            //   ii) Parse for item
+            //  iii) Tally item
+
+            // 3) Get minimum amount for every value from Inventory Minium amounts, store the value.
+
+            // 4) Run the calculations for the itemQuantity > 90%, Display them in a new 'inventory like' menu
+            //  Note: This may require have another function that's like `createNewInventoryPanel`, where it takes in a array of the item ids to be displayed and displays them.
+
+        });
+        
+
+        return exButt;
+    }
+
     private void refreshDailySalesTable() {
         DefaultTableModel model = (DefaultTableModel) dailySalesTable.getModel();
         model.setRowCount(0);
