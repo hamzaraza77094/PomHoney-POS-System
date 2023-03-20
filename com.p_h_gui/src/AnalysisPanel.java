@@ -8,7 +8,7 @@ public class AnalysisPanel extends JPanel {
     private SalesReport salesReport;
     private XReportFeature XReport;
     private RestockReport restockReport;
-    private DailySalesPanel totalSalesPanel;
+    private ExcessReportPanel excessReportPanel;
 
     public AnalysisPanel() {
         initComponents();
@@ -45,9 +45,9 @@ public class AnalysisPanel extends JPanel {
 
         // Add the action listener for the Total Sales button
         excessReportButton.addActionListener(e -> {
-            if (totalSalesPanel == null) {
-                totalSalesPanel = new DailySalesPanel(); // Replace this line with the appropriate panel for total sales
-                cards.add(totalSalesPanel, "ExcessReport");
+            if (excessReportPanel == null) {
+                excessReportPanel = new ExcessReportPanel(); // Replace this line with the appropriate panel for total sales
+                cards.add(excessReportPanel, "ExcessReport");
             }
             cardLayout.show(cards, "ExcessReport");
             revalidate();
