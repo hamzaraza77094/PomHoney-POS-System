@@ -15,7 +15,7 @@ public class NavPanel extends JPanel{
         GridBagConstraints c = new GridBagConstraints();
         c = setGridBagConstraints(c);
         if (isManager) {
-        for (int i = 1; i <= 4; i++){
+        for (int i = 1; i <= 5; i++){
             JButton newButton = new JButton("Button " + i);
             c.gridy = i; // Position the first button at row i
             buttons[i - 1] = newButton;
@@ -54,7 +54,18 @@ public class NavPanel extends JPanel{
                     }
                 });
             }
-            else if (i == 4) { // Add ActionListener to fifth button
+            if (i == 4) { // Add ActionListener to second button
+                newButton.setText("Analytics");
+                newButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        // Replace the right panel with the manager panel
+                        GUI gui = (GUI) SwingUtilities.getWindowAncestor(NavPanel.this);
+                        JSplitPane splitPane = (JSplitPane) gui.getContentPane().getComponent(0);
+                        splitPane.setRightComponent(new AnalysisPanel());
+                    }
+                });
+            }
+            else if (i == 5) { // Add ActionListener to fifth button
                 newButton.setText("Logout");
                 newButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {

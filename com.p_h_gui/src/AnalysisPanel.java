@@ -8,7 +8,7 @@ public class AnalysisPanel extends JPanel {
     private SalesReport salesReport;
     private XReportFeature XReport;
     private EmployeePanel employeePanel;
-    private TotalSalesPanel salesPanel;
+    private ZReportFeature zReportFeature;
     private DailySalesPanel totalSalesPanel;
 
     public AnalysisPanel() {
@@ -20,8 +20,8 @@ public class AnalysisPanel extends JPanel {
 
         JPanel buttonPanel = new JPanel(new GridLayout(5, 1)); // Change grid layout to 5 rows
         JButton salesReportButton = new JButton("Sales Report");
-        JButton xReportButton = new JButton("X & Z Report");
-        // JButton zReportButton = new JButton("Z Report");
+        JButton xReportButton = new JButton("X Report");
+        JButton zReportButton = new JButton("Z Report");
         JButton excessReportButton = new JButton("Excess Report"); // Add the Total Sales button
         JButton restockReportButton = new JButton("Restock Report");
 
@@ -45,15 +45,15 @@ public class AnalysisPanel extends JPanel {
             repaint();
         });
 
-        // zReportButton.addActionListener(e -> {
-        //     if (salesPanel == null) {
-        //         salesPanel = new TotalSalesPanel();
-        //         cards.add(salesPanel, "ZReport");
-        //     }
-        //     cardLayout.show(cards, "ZReport");
-        //     revalidate();
-        //     repaint();
-        // });
+        zReportButton.addActionListener(e -> {
+            if (zReportFeature == null) {
+                zReportFeature = new ZReportFeature();
+                cards.add(zReportFeature, "ZReport");
+            }
+            cardLayout.show(cards, "ZReport");
+            revalidate();
+            repaint();
+        });
 
         // Add the action listener for the Total Sales button
         excessReportButton.addActionListener(e -> {
@@ -78,7 +78,7 @@ public class AnalysisPanel extends JPanel {
 
         buttonPanel.add(salesReportButton);
         buttonPanel.add(xReportButton);
-        // buttonPanel.add(zReportButton);
+        buttonPanel.add(zReportButton);
         buttonPanel.add(excessReportButton); // Add the Total Sales button to the panel
         buttonPanel.add(restockReportButton);
 

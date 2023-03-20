@@ -19,25 +19,6 @@ public class XReportFeature extends JPanel {
         initComponents();
     }
 
-    // private void initComponents() {
-    //     setLayout(new BorderLayout());
-
-    //     salesTable = createSalesTable();
-    //     scrollPane = new JScrollPane(salesTable);
-    //     add(scrollPane, BorderLayout.CENTER);
-
-        
-    //     JPanel totalsPanel = createTotalsPanel();
-    //     JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
-    //     JButton xReportButton = createSalesReportButton("X");
-    //     JButton zReportButton = createSalesReportButton("Z");
-    //     buttonPanel.add(xReportButton);
-    //     buttonPanel.add(zReportButton);
-        
-    //     add(totalsPanel, BorderLayout.SOUTH);
-    //     add(buttonPanel, BorderLayout.SOUTH);
-    // }
-
     private void initComponents() {
         setLayout(new BorderLayout());
     
@@ -61,7 +42,7 @@ public class XReportFeature extends JPanel {
         add(southPanel, BorderLayout.SOUTH);
     
         // Refresh the sales table after the totalsPanel is initialized
-        refreshSalesTable(null);
+        refreshSalesTable();
     }
     
 
@@ -80,50 +61,21 @@ public class XReportFeature extends JPanel {
     
         return totalsPanel;
     }
-    
 
     private JButton createSalesReportButton(String reportType) {
         JButton salesReportButton = new JButton("Generate " + reportType + " Report");
-
+    
         salesReportButton.addActionListener(e -> {
             if (reportType.equals("Z")) {
                 resetXReport();
             }
             this.reportType = reportType;
-            String date = JOptionPane.showInputDialog("Enter date (YYYY-MM-DD)");
-            refreshSalesTable(date);
+            refreshSalesTable();
         });
-
+    
         return salesReportButton;
     }
 
-    // private void refreshSalesTable(String date) {
-    //     // Code to refresh the sales table based on the report type
-    // }
-    // private JTable createSalesTable() {
-    //     DefaultTableModel model = new DefaultTableModel();
-    
-    //     if (salesTable == null) {
-    //         salesTable = new JTable(model);
-    //     } else {
-    //         salesTable.setModel(model);
-    //     }
-    
-    //     model.addColumn("Report ID");
-    //     model.addColumn("Date");
-    //     model.addColumn("Sales Subtotal");
-    //     model.addColumn("Tax Amount");
-    //     model.addColumn("Total Sales");
-    //     model.addColumn("Total Transactions");
-    
-    //     if (reportType.equals("Z")) {
-    //         model.addColumn("Reset Date");
-    //     }
-    
-    //     refreshSalesTable(null);
-    
-    //     return salesTable;
-    // }
     private JTable createSalesTable() {
         DefaultTableModel model = new DefaultTableModel();
     
@@ -169,7 +121,7 @@ public class XReportFeature extends JPanel {
     
     
     
-    private void refreshSalesTable(String date) {
+    private void refreshSalesTable() {
         DefaultTableModel model = (DefaultTableModel) salesTable.getModel();
         model.setRowCount(0);
     
@@ -180,15 +132,13 @@ public class XReportFeature extends JPanel {
         try {
             conn = Login.getConnection();
             stmt = conn.createStatement();
-            if (date != null) {
-                if (reportType.equals("X")) {
-                    rs = stmt.executeQuery("SELECT * FROM x_report WHERE date = '" + date + "'");
-                } else if (reportType.equals("Z")) {
-                    rs = stmt.executeQuery("SELECT * FROM z_report WHERE date = '" + date + "'");
-                }
-            } else {
-                rs = stmt.executeQuery("SELECT * FROM x_report ORDER BY date ASC");
+    
+            String query = "SELECT * FROM x_report ORDER BY date ASC";
+            if (reportType.equals("Z")) {
+                query = "SELECT * FROM z_report ORDER BY start_date ASC";
             }
+    
+            rs = stmt.executeQuery(query);
     
             while (rs.next()) {
                 int reportId = rs.getInt("report_id");
@@ -199,8 +149,10 @@ public class XReportFeature extends JPanel {
                 int totalTransactions = rs.getInt("total_transactions");
     
                 if (reportType.equals("Z")) {
+                    Date startDate = rs.getDate("start_date");
+                    Date endDate = rs.getDate("end_date");
                     Date resetDate = rs.getDate("reset_date");
-                    model.addRow(new Object[]{reportId, dateFromTable, salesSubtotal, taxAmount, totalSales, totalTransactions, resetDate});
+                    model.addRow(new Object[]{reportId, startDate, endDate, salesSubtotal, taxAmount, totalSales, totalTransactions, resetDate});
                 } else {
                     model.addRow(new Object[]{reportId, dateFromTable, salesSubtotal, taxAmount, totalSales, totalTransactions});
                 }
@@ -232,7 +184,7 @@ public class XReportFeature extends JPanel {
         }
         updateTotals();
     }
-    
+        
 
     private void resetXReport() {
         // Code to reset the X report data and insert the totals into the Z report table

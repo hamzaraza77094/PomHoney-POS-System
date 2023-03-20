@@ -295,13 +295,25 @@ private JButton createDeleteButton() {
                 PreparedStatement appendSalesPstmt = conn.prepareStatement(appendSalesSql);
                 appendSalesPstmt.executeUpdate();
     
-                // 3. Clear the salesbridge table for the next use
+                // 3. Append the data from the salesbridge table to the x_report table
+                String appendXReportSql = "WITH aggregated_sales AS ( " +
+                "SELECT date, SUM(ordersubtotal) AS ordersubtotal, SUM(salestax) AS salestax, SUM(total) AS total, COUNT(*) AS total_transactions " +
+                "FROM salesbridge " +
+                "GROUP BY date " +
+                ") " +
+                "INSERT INTO x_report (report_id, date, sales_subtotal, tax_amount, total_sales, total_transactions) " +
+                "SELECT COALESCE((SELECT MAX(report_id) FROM x_report), 0) + 1, date, ordersubtotal, salestax, total, total_transactions " +
+                "FROM aggregated_sales;";
+
+                PreparedStatement appendXReportPstmt = conn.prepareStatement(appendXReportSql);
+                appendXReportPstmt.executeUpdate();
+
+                // 4. Clear the salesbridge table for the next use
                 String truncateSalesbridgeSql = "TRUNCATE salesbridge;";
                 PreparedStatement truncateSalesbridgePstmt = conn.prepareStatement(truncateSalesbridgeSql);
                 truncateSalesbridgePstmt.executeUpdate();
-    
-                insertDailySalesPstmt.close();
-                appendSalesPstmt.close();
+
+                appendXReportPstmt.close();
                 truncateSalesbridgePstmt.close();
             } catch (SQLException ex) {
                 System.out.println("Error connecting to database: " + ex.getMessage());
@@ -314,12 +326,12 @@ private JButton createDeleteButton() {
                     }
                 }
             }
-    
+
             // Refresh the sales table and the dailySales table
             refreshSalesTable();
-        });
-        return compileButton;
-    }
+            });
+            return compileButton;
+        }
     
 
              

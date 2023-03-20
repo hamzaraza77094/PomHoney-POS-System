@@ -33,6 +33,40 @@ public class InventoryPanel extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    // private JTable createInventoryTable() {
+    //     DefaultTableModel model = new DefaultTableModel();
+    //     JTable table = new JTable(model);
+    
+    //     // Add columns to the inventory table
+    //     model.addColumn("Item ID");
+    //     model.addColumn("Item Name");
+    //     model.addColumn("Item Amount");
+    //     model.addColumn("Item Measurement Type");
+    
+    //     // Retrieve data from the inventory table
+    //     try {
+    //         Connection conn = Login.getConnection();
+    //         Statement stmt = conn.createStatement();
+    //         ResultSet rs = stmt.executeQuery("SELECT * FROM inventory ORDER BY item_ID ASC");
+    
+    //         while (rs.next()) {
+    //             int itemId = rs.getInt("item_id");
+    //             String itemName = rs.getString("item_name");
+    //             int amount = rs.getInt("item_amount");
+    //             String measurementType = rs.getString("item_measurement_type");
+    //             model.addRow(new Object[]{itemId, itemName, amount, measurementType});
+    //         }
+    
+    //         rs.close();
+    //         stmt.close();
+    //         conn.close();
+    //     } catch (SQLException ex) {
+    //         System.out.println("Error connecting to database: " + ex.getMessage());
+    //     }
+    
+    //     return table;
+    // }
+
     private JTable createInventoryTable() {
         DefaultTableModel model = new DefaultTableModel();
         JTable table = new JTable(model);
@@ -42,6 +76,7 @@ public class InventoryPanel extends JPanel {
         model.addColumn("Item Name");
         model.addColumn("Item Amount");
         model.addColumn("Item Measurement Type");
+        model.addColumn("Minimum"); // Added the new 'Minimum' column
     
         // Retrieve data from the inventory table
         try {
@@ -54,7 +89,8 @@ public class InventoryPanel extends JPanel {
                 String itemName = rs.getString("item_name");
                 int amount = rs.getInt("item_amount");
                 String measurementType = rs.getString("item_measurement_type");
-                model.addRow(new Object[]{itemId, itemName, amount, measurementType});
+                int minimum = rs.getInt("minimum"); // Retrieve the minimum value from the database
+                model.addRow(new Object[]{itemId, itemName, amount, measurementType, minimum});
             }
     
             rs.close();
@@ -67,23 +103,77 @@ public class InventoryPanel extends JPanel {
         return table;
     }
     
+    
 
     // Create and configure the Add button
+    // private JButton createAddButton() {
+    //     JButton addButton = new JButton("Add Item");
+
+    //     addButton.addActionListener(e -> {
+    //         // Prompt user to input new item data
+    //         String itemName = JOptionPane.showInputDialog("Enter item name:");
+    //         String amountStr = JOptionPane.showInputDialog("Enter item amount:");
+    //         String measurementType = JOptionPane.showInputDialog("Enter item measurement type:");
+
+    //         // Insert new item into the inventory table
+    //         PreparedStatement pstmt = null;
+    //         Connection conn = null;
+    //         try {
+    //             conn = Login.getConnection();
+
+    //             // Retrieve the highest item_id value from the inventory table
+    //             Statement stmt = conn.createStatement();
+    //             ResultSet rs = stmt.executeQuery("SELECT MAX(item_id) FROM inventory");
+    //             int newId = 1;
+    //             if (rs.next()) {
+    //                 newId = rs.getInt(1) + 1;
+    //             }
+
+    //             // Insert the new item with the incremented item_id value
+    //             pstmt = conn.prepareStatement("INSERT INTO inventory (item_id, item_name, item_amount, item_measurement_type) VALUES (?, ?, ?, ?)");
+    //             pstmt.setInt(1, newId);
+    //             pstmt.setString(2, itemName);
+    //             pstmt.setInt(3, Integer.parseInt(amountStr));
+    //             pstmt.setString(4, measurementType);
+    //             pstmt.executeUpdate();
+
+    //             pstmt.close();
+    //             stmt.close();
+    //             rs.close();
+    //         } catch (SQLException ex) {
+    //             System.out.println("Error connecting to database: " + ex.getMessage());
+    //         } finally {
+    //             if (conn != null) {
+    //                 try {
+    //                     conn.close();
+    //                 } catch (SQLException ex) {
+    //                     System.out.println("Error closing database connection: " + ex.getMessage());
+    //                 }
+    //             }
+    //         }
+
+    //         // Refresh the inventory table
+    //         refreshInventoryTable();
+    //     });
+
+    //     return addButton;
+    // }
     private JButton createAddButton() {
         JButton addButton = new JButton("Add Item");
-
+    
         addButton.addActionListener(e -> {
             // Prompt user to input new item data
             String itemName = JOptionPane.showInputDialog("Enter item name:");
             String amountStr = JOptionPane.showInputDialog("Enter item amount:");
             String measurementType = JOptionPane.showInputDialog("Enter item measurement type:");
-
+            String minimumStr = JOptionPane.showInputDialog("Enter minimum item amount:"); // Add input dialog for minimum value
+    
             // Insert new item into the inventory table
             PreparedStatement pstmt = null;
             Connection conn = null;
             try {
                 conn = Login.getConnection();
-
+    
                 // Retrieve the highest item_id value from the inventory table
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery("SELECT MAX(item_id) FROM inventory");
@@ -91,15 +181,16 @@ public class InventoryPanel extends JPanel {
                 if (rs.next()) {
                     newId = rs.getInt(1) + 1;
                 }
-
+    
                 // Insert the new item with the incremented item_id value
-                pstmt = conn.prepareStatement("INSERT INTO inventory (item_id, item_name, item_amount, item_measurement_type) VALUES (?, ?, ?, ?)");
+                pstmt = conn.prepareStatement("INSERT INTO inventory (item_id, item_name, item_amount, item_measurement_type, minimum) VALUES (?, ?, ?, ?, ?)");
                 pstmt.setInt(1, newId);
                 pstmt.setString(2, itemName);
                 pstmt.setInt(3, Integer.parseInt(amountStr));
                 pstmt.setString(4, measurementType);
+                pstmt.setInt(5, Integer.parseInt(minimumStr)); // Add the minimum value to the prepared statement
                 pstmt.executeUpdate();
-
+    
                 pstmt.close();
                 stmt.close();
                 rs.close();
@@ -114,11 +205,11 @@ public class InventoryPanel extends JPanel {
                     }
                 }
             }
-
+    
             // Refresh the inventory table
             refreshInventoryTable();
         });
-
+    
         return addButton;
     }
 
@@ -159,24 +250,70 @@ public class InventoryPanel extends JPanel {
     }
 
     // Create and configure the Update button
+    // private JButton createUpdateButton() {
+    //     JButton updateButton = new JButton("Update Item");
+
+    //     updateButton.addActionListener(e -> {
+    //         String itemIdStr = JOptionPane.showInputDialog("Enter item ID:");
+    //         String itemName = JOptionPane.showInputDialog("Enter new item name:");
+    //         String amountStr = JOptionPane.showInputDialog("Enter new item amount:");
+    //         String measurementType = JOptionPane.showInputDialog("Enter new item measurement type:");
+
+    //         PreparedStatement pstmt = null;
+    //         Connection conn = null;
+    //         try {
+    //             conn = Login.getConnection();
+    //             pstmt = conn.prepareStatement("UPDATE inventory SET item_name = ?, item_amount = ?, item_measurement_type = ? WHERE item_id = ?");
+    //             pstmt.setString(1, itemName);
+    //             pstmt.setInt(2, Integer.parseInt(amountStr));
+    //             pstmt.setString(3, measurementType);
+    //             pstmt.setInt(4, Integer.parseInt(itemIdStr));
+    //             pstmt.executeUpdate();
+    //         } catch (SQLException ex) {
+    //             System.out.println("Error connecting to database: " + ex.getMessage());
+    //         } finally {
+    //             if (pstmt != null) {
+    //                 try {
+    //                     pstmt.close();
+    //                 } catch (SQLException ex) {
+    //                     System.out.println("Error closing PreparedStatement: " + ex.getMessage());
+    //                 }
+    //             }
+    //             if (conn != null) {
+    //                 try {
+    //                     conn.close();
+    //                 } catch (SQLException ex) {
+    //                     System.out.println("Error closing database connection: " + ex.getMessage());
+    //                 }
+    //             }
+    //         }
+
+    //         // Refresh the inventory table
+    //         refreshInventoryTable();
+    //     });
+
+    //     return updateButton;
+    // }
     private JButton createUpdateButton() {
         JButton updateButton = new JButton("Update Item");
-
+    
         updateButton.addActionListener(e -> {
             String itemIdStr = JOptionPane.showInputDialog("Enter item ID:");
             String itemName = JOptionPane.showInputDialog("Enter new item name:");
             String amountStr = JOptionPane.showInputDialog("Enter new item amount:");
             String measurementType = JOptionPane.showInputDialog("Enter new item measurement type:");
-
+            String minimumStr = JOptionPane.showInputDialog("Enter new minimum item amount:"); // Add input dialog for minimum value
+    
             PreparedStatement pstmt = null;
             Connection conn = null;
             try {
                 conn = Login.getConnection();
-                pstmt = conn.prepareStatement("UPDATE inventory SET item_name = ?, item_amount = ?, item_measurement_type = ? WHERE item_id = ?");
+                pstmt = conn.prepareStatement("UPDATE inventory SET item_name = ?, item_amount = ?, item_measurement_type = ?, minimum = ? WHERE item_id = ?");
                 pstmt.setString(1, itemName);
                 pstmt.setInt(2, Integer.parseInt(amountStr));
                 pstmt.setString(3, measurementType);
-                pstmt.setInt(4, Integer.parseInt(itemIdStr));
+                pstmt.setInt(4, Integer.parseInt(minimumStr)); // Add the minimum value to the prepared statement
+                pstmt.setInt(5, Integer.parseInt(itemIdStr));
                 pstmt.executeUpdate();
             } catch (SQLException ex) {
                 System.out.println("Error connecting to database: " + ex.getMessage());
@@ -196,14 +333,62 @@ public class InventoryPanel extends JPanel {
                     }
                 }
             }
-
+    
             // Refresh the inventory table
             refreshInventoryTable();
         });
-
+    
         return updateButton;
     }
 
+
+    // private void refreshInventoryTable() {
+    //     DefaultTableModel model = (DefaultTableModel) inventoryTable.getModel();
+    //     model.setRowCount(0);
+    
+    //     Connection conn = null;
+    //     Statement stmt = null;
+    //     ResultSet rs = null;
+    
+    //     try {
+    //         conn = Login.getConnection();
+    //         stmt = conn.createStatement();
+    //         rs = stmt.executeQuery("SELECT * FROM inventory ORDER BY item_ID ASC");
+    
+    //         while (rs.next()) {
+    //             int itemId = rs.getInt("item_id");
+    //             String itemName = rs.getString("item_name");
+    //             int amount = rs.getInt("item_amount");
+    //             String measurementType = rs.getString("item_measurement_type");
+    
+    //             model.addRow(new Object[]{itemId, itemName, amount, measurementType});
+    //         }
+    //     } catch (SQLException ex) {
+    //         System.out.println("Error connecting to database: " + ex.getMessage());
+    //     } finally {
+    //         if (rs != null) {
+    //             try {
+    //                 rs.close();
+    //             } catch (SQLException ex) {
+    //                 System.out.println("Error closing ResultSet: " + ex.getMessage());
+    //             }
+    //         }
+    //         if (stmt != null) {
+    //             try {
+    //                 stmt.close();
+    //             } catch (SQLException ex) {
+    //                 System.out.println("Error closing Statement: " + ex.getMessage());
+    //             }
+    //         }
+    //         if (conn != null) {
+    //             try {
+    //                 conn.close();
+    //             } catch (SQLException ex) {
+    //                 System.out.println("Error closing database connection: " + ex.getMessage());
+    //             }
+    //         }
+    //     }
+    // }
 
     private void refreshInventoryTable() {
         DefaultTableModel model = (DefaultTableModel) inventoryTable.getModel();
@@ -223,8 +408,9 @@ public class InventoryPanel extends JPanel {
                 String itemName = rs.getString("item_name");
                 int amount = rs.getInt("item_amount");
                 String measurementType = rs.getString("item_measurement_type");
+                int minimum = rs.getInt("minimum"); // Add the minimum value here
     
-                model.addRow(new Object[]{itemId, itemName, amount, measurementType});
+                model.addRow(new Object[]{itemId, itemName, amount, measurementType, minimum}); // Add the minimum value to the table
             }
         } catch (SQLException ex) {
             System.out.println("Error connecting to database: " + ex.getMessage());
