@@ -7,13 +7,10 @@ import java.sql.*;
 
 public class XReportFeature extends JPanel {
 
-    private JTable salesTable;
-    private JScrollPane scrollPane;
-    private String reportType = "X"; // Default report type is X report
-    private JLabel subtotalLabel;
-    private JLabel taxLabel;
-    private JLabel totalLabel;
-
+    private JTable xReportTable;
+    private JTable zReportTable;
+    private JScrollPane xReportScrollPane;
+    private JScrollPane zReportScrollPane;
 
     public XReportFeature() {
         initComponents();
@@ -21,172 +18,190 @@ public class XReportFeature extends JPanel {
 
     private void initComponents() {
         setLayout(new BorderLayout());
-    
-        salesTable = createSalesTable();
-        scrollPane = new JScrollPane(salesTable);
-        add(scrollPane, BorderLayout.CENTER);
-    
-        // Create a parent panel for totalsPanel and buttonPanel
-        JPanel southPanel = new JPanel(new BorderLayout());
-    
-        JPanel totalsPanel = createTotalsPanel();
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
-        JButton xReportButton = createSalesReportButton("X");
-        JButton zReportButton = createSalesReportButton("Z");
-        buttonPanel.add(xReportButton);
-        buttonPanel.add(zReportButton);
-    
-        southPanel.add(totalsPanel, BorderLayout.NORTH);
-        southPanel.add(buttonPanel, BorderLayout.SOUTH);
-    
-        add(southPanel, BorderLayout.SOUTH);
-    
-        // Refresh the sales table after the totalsPanel is initialized
-        refreshSalesTable();
-    }
-    
 
+        // Set up X_Report
+        xReportTable = createXReportTable();
+        xReportScrollPane = new JScrollPane(xReportTable);
+        JPanel xReportPanel = new JPanel(new BorderLayout());
+        xReportPanel.setBorder(BorderFactory.createTitledBorder("X_Report"));
+        xReportPanel.add(xReportScrollPane, BorderLayout.CENTER);
 
-    private JPanel createTotalsPanel() {
-        JPanel totalsPanel = new JPanel();
-        totalsPanel.setLayout(new GridLayout(1, 3));
-    
-        subtotalLabel = new JLabel("Subtotal: $0.00");
-        taxLabel = new JLabel("Tax: $0.00");
-        totalLabel = new JLabel("Total: $0.00");
-    
-        totalsPanel.add(subtotalLabel);
-        totalsPanel.add(taxLabel);
-        totalsPanel.add(totalLabel);
-    
-        return totalsPanel;
+        // Set up Z_Report
+        zReportTable = createZReportTable();
+        zReportScrollPane = new JScrollPane(zReportTable);
+        JPanel zReportPanel = new JPanel(new BorderLayout());
+        zReportPanel.setBorder(BorderFactory.createTitledBorder("Z_Report"));
+        zReportPanel.add(zReportScrollPane, BorderLayout.CENTER);
+
+        // Combine X_Report and Z_Report
+        JPanel reportsPanel = new JPanel(new GridLayout(2, 1));
+        reportsPanel.add(xReportPanel);
+        reportsPanel.add(zReportPanel);
+        add(reportsPanel, BorderLayout.CENTER);
+
+        // Add Generate Z_Report button
+        JButton generateZReportButton = createGenerateZReportButton();
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(generateZReportButton);
+        add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    private JButton createSalesReportButton(String reportType) {
-        JButton salesReportButton = new JButton("Generate " + reportType + " Report");
+
+    private JTable createXReportTable() {
+        DefaultTableModel xReportModel = new DefaultTableModel(new Object[]{"Transaction ID", "Date", "Sales Subtotal", "Tax Amount", "Total Sales", "Total Transactions"}, 0);
+        JTable xReportTable = new JTable(xReportModel);
+        xReportTable.setAutoCreateRowSorter(true);
     
-        salesReportButton.addActionListener(e -> {
-            if (reportType.equals("Z")) {
-                resetXReport();
+        try (Connection connection = connectDatabase()) {
+            String query = "SELECT * FROM x_report";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+    
+            while (resultSet.next()) {
+                int transactionId = resultSet.getInt("report_id");
+                Date date = resultSet.getDate("date");
+                double salesSubtotal = resultSet.getDouble("sales_subtotal");
+                double taxAmount = resultSet.getDouble("tax_amount");
+                double totalSales = resultSet.getDouble("total_sales");
+                int totalTransactions = resultSet.getInt("total_transactions");
+    
+                xReportModel.addRow(new Object[]{transactionId, date, salesSubtotal, taxAmount, totalSales, totalTransactions});
             }
-            this.reportType = reportType;
-            refreshSalesTable();
+    
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    
+        return xReportTable;
+    }
+    
+    private JTable createZReportTable() {
+        DefaultTableModel zReportModel = new DefaultTableModel(new Object[]{"Report ID", "Start Date", "End Date", "Sales Subtotal", "Tax Amount", "Total Sales", "Total Transactions"}, 0);
+        JTable zReportTable = new JTable(zReportModel);
+        zReportTable.setAutoCreateRowSorter(true);
+    
+        try (Connection connection = connectDatabase()) {
+            String query = "SELECT * FROM z_report";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+    
+            while (resultSet.next()) {
+                int reportId = resultSet.getInt("report_id");
+                Date startDate = resultSet.getDate("start_date");
+                Date endDate = resultSet.getDate("end_date");
+                double salesSubtotal = resultSet.getDouble("sales_subtotal");
+                double taxAmount = resultSet.getDouble("tax_amount");
+                double totalSales = resultSet.getDouble("total_sales");
+                int totalTransactions = resultSet.getInt("total_transactions");
+    
+                zReportModel.addRow(new Object[]{reportId, startDate, endDate, salesSubtotal, taxAmount, totalSales, totalTransactions});
+            }
+    
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    
+        return zReportTable;
+    }
+    
+    private JButton createGenerateZReportButton() {
+        JButton generateZReportButton = new JButton("Generate Z_Report");
+    
+        generateZReportButton.addActionListener(e -> {
+            DefaultTableModel zReportModel = (DefaultTableModel) zReportTable.getModel();
+            DefaultTableModel xReportModel = (DefaultTableModel) xReportTable.getModel();
+    
+            if (xReportTable.getRowCount() > 0) {
+                int lastReportId = zReportTable.getRowCount() > 0
+                        ? (int) zReportTable.getValueAt(zReportTable.getRowCount() - 1, 0)
+                        : 0;
+                int reportId = lastReportId + 1;
+                Date startDate = (Date) xReportTable.getValueAt(0, 1);
+                Date endDate = (Date) xReportTable.getValueAt(xReportTable.getRowCount() - 1, 1);
+    
+                double salesSubtotal = 0;
+                double taxAmount = 0;
+                double totalSales = 0;
+                int totalTransactions = xReportTable.getRowCount();
+    
+                for (int i = 0; i < totalTransactions; i++) {
+                    salesSubtotal += (double) xReportTable.getValueAt(i, 2);
+                    taxAmount += (double) xReportTable.getValueAt(i, 3);
+                    totalSales += (double) xReportTable.getValueAt(i, 4);
+                }
+    
+                zReportModel.addRow(new Object[]{reportId, startDate, endDate, salesSubtotal, taxAmount, totalSales, totalTransactions});
+    
+                // Save the generated Z-Report in the database
+                try (Connection connection = connectDatabase()) {
+                    saveZReportToDatabase(connection, reportId, startDate, endDate, salesSubtotal, taxAmount, totalSales, totalTransactions);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+    
+                // Clear the X-Report table in the GUI
+                clearXReportTable(xReportModel);
+    
+                // Clear the X-Report table in the database
+                try (Connection connection = connectDatabase()) {
+                    clearXReportTableInDatabase(connection);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+    
+            } else {
+                JOptionPane.showMessageDialog(null, "X_Report is empty. Please add data to X_Report first.");
+            }
         });
     
-        return salesReportButton;
+        return generateZReportButton;
     }
-
-    private JTable createSalesTable() {
-        DefaultTableModel model = new DefaultTableModel();
     
-        if (salesTable == null) {
-            salesTable = new JTable(model);
-        } else {
-            salesTable.setModel(model);
-        }
     
-        model.addColumn("Report ID");
-        model.addColumn("Date");
-        model.addColumn("Sales Subtotal");
-        model.addColumn("Tax Amount");
-        model.addColumn("Total Sales");
-        model.addColumn("Total Transactions");
-    
-        if (reportType.equals("Z")) {
-            model.addColumn("Reset Date");
-        }
-    
-        return salesTable;
+    private void clearXReportTable(DefaultTableModel xReportModel) {
+        xReportModel.setRowCount(0);
     }
     
 
-    private void updateTotals() {
-        double subtotal = 0;
-        double tax = 0;
-        double total = 0;
-    
-        DefaultTableModel model = (DefaultTableModel) salesTable.getModel();
-        int rowCount = model.getRowCount();
-    
-        for (int i = 0; i < rowCount; i++) {
-            subtotal += (double) model.getValueAt(i, 2);
-            tax += (double) model.getValueAt(i, 3);
-            total += (double) model.getValueAt(i, 4);
-        }
-    
-        subtotalLabel.setText(String.format("Subtotal: $%.2f", subtotal));
-        taxLabel.setText(String.format("Tax: $%.2f", tax));
-        totalLabel.setText(String.format("Total: $%.2f", total));
-    }
-    
-    
-    
-    private void refreshSalesTable() {
-        DefaultTableModel model = (DefaultTableModel) salesTable.getModel();
-        model.setRowCount(0);
-    
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-    
+    private Connection connectDatabase() {
+        Connection connection = null;
         try {
-            conn = Login.getConnection();
-            stmt = conn.createStatement();
-    
-            String query = "SELECT * FROM x_report ORDER BY date ASC";
-            if (reportType.equals("Z")) {
-                query = "SELECT * FROM z_report ORDER BY start_date ASC";
-            }
-    
-            rs = stmt.executeQuery(query);
-    
-            while (rs.next()) {
-                int reportId = rs.getInt("report_id");
-                Date dateFromTable = rs.getDate("date");
-                double salesSubtotal = rs.getDouble("sales_subtotal");
-                double taxAmount = rs.getDouble("tax_amount");
-                double totalSales = rs.getDouble("total_sales");
-                int totalTransactions = rs.getInt("total_transactions");
-    
-                if (reportType.equals("Z")) {
-                    Date startDate = rs.getDate("start_date");
-                    Date endDate = rs.getDate("end_date");
-                    Date resetDate = rs.getDate("reset_date");
-                    model.addRow(new Object[]{reportId, startDate, endDate, salesSubtotal, taxAmount, totalSales, totalTransactions, resetDate});
-                } else {
-                    model.addRow(new Object[]{reportId, dateFromTable, salesSubtotal, taxAmount, totalSales, totalTransactions});
-                }
-            }
-        } catch (SQLException ex) {
-            System.out.println("Error connecting to database: " + ex.getMessage());
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    System.out.println("Error closing ResultSet: " + ex.getMessage());
-                }
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException ex) {
-                    System.out.println("Error closing Statement: " + ex.getMessage());
-                }
-            }
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException ex) {
-                    System.out.println("Error closing database connection: " + ex.getMessage());
-                }
-            }
+            connection = Login.getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        updateTotals();
+        return connection;
     }
-        
 
-    private void resetXReport() {
-        // Code to reset the X report data and insert the totals into the Z report table
+    private void clearXReportTableInDatabase(Connection connection) {
+        String query = "DELETE FROM x_report";
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(query);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+
+    private void saveZReportToDatabase(Connection connection, int reportId, Date startDate, Date endDate, double salesSubtotal, double taxAmount, double totalSales, int totalTransactions) {
+        String query = "INSERT INTO z_report (report_id, start_date, end_date, sales_subtotal, tax_amount, total_sales, total_transactions) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, reportId);
+            preparedStatement.setDate(2, new java.sql.Date(startDate.getTime()));
+            preparedStatement.setDate(3, new java.sql.Date(endDate.getTime()));
+            preparedStatement.setDouble(4, salesSubtotal);
+            preparedStatement.setDouble(5, taxAmount);
+            preparedStatement.setDouble(6, totalSales);
+            preparedStatement.setInt(7, totalTransactions);
+    
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
+    
+    
 }

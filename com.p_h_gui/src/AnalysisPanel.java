@@ -7,8 +7,7 @@ public class AnalysisPanel extends JPanel {
     private CardLayout cardLayout;
     private SalesReport salesReport;
     private XReportFeature XReport;
-    private EmployeePanel employeePanel;
-    private ZReportFeature zReportFeature;
+    private RestockReport restockReport;
     private DailySalesPanel totalSalesPanel;
 
     public AnalysisPanel() {
@@ -18,10 +17,9 @@ public class AnalysisPanel extends JPanel {
     private void initComponents() {
         setLayout(new BorderLayout());
 
-        JPanel buttonPanel = new JPanel(new GridLayout(5, 1)); // Change grid layout to 5 rows
+        JPanel buttonPanel = new JPanel(new GridLayout(4, 1)); // Change grid layout to 5 rows
         JButton salesReportButton = new JButton("Sales Report");
-        JButton xReportButton = new JButton("X Report");
-        JButton zReportButton = new JButton("Z Report");
+        JButton xReportButton = new JButton("X & Z Report");
         JButton excessReportButton = new JButton("Excess Report"); // Add the Total Sales button
         JButton restockReportButton = new JButton("Restock Report");
 
@@ -45,16 +43,6 @@ public class AnalysisPanel extends JPanel {
             repaint();
         });
 
-        zReportButton.addActionListener(e -> {
-            if (zReportFeature == null) {
-                zReportFeature = new ZReportFeature();
-                cards.add(zReportFeature, "ZReport");
-            }
-            cardLayout.show(cards, "ZReport");
-            revalidate();
-            repaint();
-        });
-
         // Add the action listener for the Total Sales button
         excessReportButton.addActionListener(e -> {
             if (totalSalesPanel == null) {
@@ -67,9 +55,9 @@ public class AnalysisPanel extends JPanel {
         });
 
         restockReportButton.addActionListener(e -> {
-            if (employeePanel == null) {
-                employeePanel = new EmployeePanel();
-                cards.add(employeePanel, "RestockReport");
+            if (restockReport == null) {
+                restockReport = new RestockReport();
+                cards.add(restockReport, "RestockReport");
             }
             cardLayout.show(cards, "RestockReport");
             revalidate();
@@ -78,7 +66,6 @@ public class AnalysisPanel extends JPanel {
 
         buttonPanel.add(salesReportButton);
         buttonPanel.add(xReportButton);
-        buttonPanel.add(zReportButton);
         buttonPanel.add(excessReportButton); // Add the Total Sales button to the panel
         buttonPanel.add(restockReportButton);
 

@@ -25,10 +25,13 @@ public class InventoryPanel extends JPanel {
         JButton addButton = createAddButton();
         JButton deleteButton = createDeleteButton();
         JButton updateButton = createUpdateButton();
+        JButton resetInventoryCountButton = createResetInventoryCountButton(); // Not made yet
 
         buttonPanel.add(addButton);
         buttonPanel.add(deleteButton);
         buttonPanel.add(updateButton);
+        buttonPanel.add(resetInventoryCountButton); // Not made yet
+
 
         add(buttonPanel, BorderLayout.SOUTH);
     }
@@ -340,6 +343,47 @@ public class InventoryPanel extends JPanel {
     
         return updateButton;
     }
+
+
+    private JButton createResetInventoryCountButton() {
+        JButton rInvCountButton = new JButton("RST INV #s");
+    
+        rInvCountButton.addActionListener(e -> {
+            try {
+                Connection conn = Login.getConnection();
+                Statement stmt = conn.createStatement();
+    
+                conn.createStatement().executeQuery(
+                    "UPDATE inventory SET item_amount = CASE " +
+                            "WHEN item_measurement_type = 'count' THEN 150" +
+                            "WHEN item_measurement_type = 'gallons' THEN 55" +
+                            "WHEN item_measurement_type = 'pounds' THEN 75" +
+                            "END"
+                ); // Reset the count amount
+    
+                conn.createStatement().executeQuery(
+                    "UPDATE inventory SET minimum = CASE" +
+                            "WHEN item_measurement_type = 'count' THEN 15" +
+                            "WHEN item_measurement_type = 'gallons' THEN 5" +
+                            "WHEN item_measurement_type = 'pounds' THEN 7" +
+                            "END"
+                ); // Update the minimum value to be 10% of item_amount
+    
+                stmt.close();
+                conn.close();
+            } catch (SQLException ex) {
+                if (ex.getMessage().compareTo("No results were returned by the query.") != 0) {
+                    // handle the exception in the usual way
+                    System.out.println(ex.getMessage());
+                }
+            }
+    
+            refreshInventoryTable();
+        });
+    
+        return rInvCountButton;
+    }
+    
 
 
     // private void refreshInventoryTable() {
