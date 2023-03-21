@@ -1,6 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
 
+/** 
+ * A class used to house the subPanels of the Manager Features
+ * @author Hamza Raza, Cameron Yoffe, Jacob Parker, Adam Vick
+*/
+
 public class ManagerPanel extends JPanel {
     private JPanel cards;
     private CardLayout cardLayout;
@@ -10,10 +15,20 @@ public class ManagerPanel extends JPanel {
     private TotalSalesPanel salesPanel;
     private DailySalesPanel totalSalesPanel;
 
+    /** 
+     * Cosntructor for the ManagerPanel Class. Calls `initComponents()` to set the parameters of the panel.  
+     * @param none 
+     * @return JPanel
+    */
     public ManagerPanel() {
         initComponents();
     }
 
+    /** 
+     * Used to set the paramaters of 'ManagerPanel()'. 
+     * @param none
+     * @return JPanel
+    */
     private void initComponents() {
         setLayout(new BorderLayout());
 

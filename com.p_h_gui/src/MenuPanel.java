@@ -5,15 +5,29 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
+/** 
+ * A class used to house the subPanels of the Menu Features
+ * @author Hamza Raza, Cameron Yoffe, Jacob Parker, Adam Vick
+*/
 public class MenuPanel extends JPanel {
 
     private JTable MenuTable;
     private JScrollPane scrollPane;
 
+    /** 
+     * Cosntructor for the MenuPanel Class. Calls `initComponents()` to set the parameters of the panel.  
+     * @param none 
+     * @return JPanel
+    */
     public MenuPanel() {
         initComponents();
     }
 
+    /** 
+     * Used to set the paramaters of 'MenuPanel()'. 
+     * @param none
+     * @return JPanel
+    */
     private void initComponents() {
         setLayout(new BorderLayout());
 
@@ -33,6 +47,11 @@ public class MenuPanel extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * createMenuTable(): Creates the Menu Table to house the items from the `menu` table in the `csce315331_epsilon` database.
+     * @param none
+     * @return JTable
+     */
     private JTable createMenuTable() {
         DefaultTableModel model = new DefaultTableModel();
         JTable table = new JTable(model);
@@ -66,7 +85,11 @@ public class MenuPanel extends JPanel {
     }
     
 
-    // Create and configure the Add button
+    /**
+     * Create and configure the Add button for the MenuPanel. Has `addActionListener()` functionality to add a menu item.
+     * @param none
+     * @return JButton
+     */
     private JButton createAddButton() {
         JButton addButton = new JButton("Add Item");
 
@@ -119,7 +142,11 @@ public class MenuPanel extends JPanel {
     }
 
 
-    // Create and configure the Delete button
+    /**
+     * Create and configure the Delete button for MenuPanel. Has `addActionListener()` functionality to add a menu item.
+     * @param none
+     * @return JButton
+     */
     private JButton createDeleteButton() {
         JButton deleteButton = new JButton("Delete Item");
 
@@ -154,7 +181,12 @@ public class MenuPanel extends JPanel {
         return deleteButton;
     }
 
-    // Create and configure the Update button
+    
+    /**
+     * Create and configure the Update button for the MenuPanel. Has `addActionListener()` functionality to add a menu item.
+     * @param none
+     * @return JButton
+     */
     private JButton createUpdateButton() {
         JButton updateButton = new JButton("Update Item");
 
@@ -198,7 +230,11 @@ public class MenuPanel extends JPanel {
         return updateButton;
     }
 
-
+    /**
+     * Used to update the table w/ new information if needed. Updates the current MenuPanel.
+     * @param none
+     * @return none
+     */
     private void refreshMenuTable() {
         DefaultTableModel model = (DefaultTableModel) MenuTable.getModel();
         model.setRowCount(0);

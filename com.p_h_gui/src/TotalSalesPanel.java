@@ -5,15 +5,29 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
+/** 
+ * A class used to house the subPanels of the Total Sales Features
+ * @author Hamza Raza, Cameron Yoffe, Jacob Parker, Adam Vick
+*/
 public class TotalSalesPanel extends JPanel {
 
     private JTable salesTable;
     private JScrollPane scrollPane;
 
+    /** 
+     * Constructor for the TotalSalesPanel Class. Calls `initComponents()` to set the parameters of the panel.  
+     * @param none 
+     * @return JPanel
+    */
     public TotalSalesPanel() {
         initComponents();
     }
 
+    /** 
+     * Used to set the paramaters of 'TotalSalesPanel()'. 
+     * @param none
+     * @return JPanel
+    */
     private void initComponents() {
         setLayout(new BorderLayout());
 
@@ -33,6 +47,11 @@ public class TotalSalesPanel extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Creates the Sales Table to display the sales from sales table
+     * @param none
+     * @return JTable
+     */
     private JTable createSalesTable() {
         DefaultTableModel model = new DefaultTableModel();
         JTable table = new JTable(model);
@@ -67,6 +86,11 @@ public class TotalSalesPanel extends JPanel {
         return table;
     }
 
+    /**
+     * Create and configure the Add button for the TotalSalesPanel. Has `addActionListener()` functionality to add a sales item.
+     * @param none
+     * @return JButton
+     */
     private JButton createAddButton() {
         JButton addButton = new JButton("Add Sale");
 
@@ -107,6 +131,11 @@ public class TotalSalesPanel extends JPanel {
         return addButton;
     }
 
+    /**
+     * Create and configure the Delete button for TotalSalesPanel. Has `addActionListener()` functionality to add a sales item.
+     * @param none
+     * @return JButton
+     */
     private JButton createDeleteButton() {
         JButton deleteButton = new JButton("Delete Sale");
     
@@ -136,6 +165,11 @@ public class TotalSalesPanel extends JPanel {
         return deleteButton;
     }
     
+    /**
+     * Create and configure the Update button for the SalesPanel. Has `addActionListener()` functionality to add a sales item.
+     * @param none
+     * @return JButton
+     */
     private JButton createUpdateButton() {
         JButton updateButton = new JButton("Update Sale");
     
@@ -178,6 +212,11 @@ public class TotalSalesPanel extends JPanel {
         return updateButton;
     }
 
+    /**
+     * Used to update the table w/ new information if needed. Updates the current SalesTable.
+     * @param none
+     * @return none
+     */
     private void refreshSalesTable() {
         DefaultTableModel model = (DefaultTableModel) salesTable.getModel();
         model.setRowCount(0);

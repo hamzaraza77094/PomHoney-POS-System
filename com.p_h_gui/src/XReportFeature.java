@@ -5,6 +5,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
+/** 
+ * A class used to satisfy the X&Z Report Requirement. 
+ * @author Hamza Raza, Cameron Yoffe, Jacob Parker, Adam Vick
+*/
 public class XReportFeature extends JPanel {
 
     private JTable xReportTable;
@@ -12,10 +16,19 @@ public class XReportFeature extends JPanel {
     private JScrollPane xReportScrollPane;
     private JScrollPane zReportScrollPane;
 
+    /**
+     * Constructor for the XReportPanel
+     * @return JPanel
+     */
     public XReportFeature() {
         initComponents();
     }
 
+    /** 
+     * Used to set the paramaters of 'XReportPanel()'. 
+     * @param none
+     * @return JPanel
+    */
     private void initComponents() {
         setLayout(new BorderLayout());
 
@@ -46,7 +59,11 @@ public class XReportFeature extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-
+    /**
+     * Creates the JTable that will display the X Report
+     * @param none
+     * @return JTable
+     */
     private JTable createXReportTable() {
         DefaultTableModel xReportModel = new DefaultTableModel(new Object[]{"Transaction ID", "Date", "Sales Subtotal", "Tax Amount", "Total Sales", "Total Transactions"}, 0);
         JTable xReportTable = new JTable(xReportModel);
@@ -75,6 +92,11 @@ public class XReportFeature extends JPanel {
         return xReportTable;
     }
     
+     /**
+     * Creates the JTable that will display the Z Report
+     * @param none
+     * @return JTable
+     */
     private JTable createZReportTable() {
         DefaultTableModel zReportModel = new DefaultTableModel(new Object[]{"Report ID", "Start Date", "End Date", "Sales Subtotal", "Tax Amount", "Total Sales", "Total Transactions"}, 0);
         JTable zReportTable = new JTable(zReportModel);
@@ -104,6 +126,11 @@ public class XReportFeature extends JPanel {
         return zReportTable;
     }
     
+     /**
+     * Creates the JButton that will display the Z Report
+     * @param none
+     * @return JTable
+     */
     private JButton createGenerateZReportButton() {
         JButton generateZReportButton = new JButton("Generate Z_Report");
     
@@ -157,12 +184,20 @@ public class XReportFeature extends JPanel {
         return generateZReportButton;
     }
     
-    
+    /**
+     * Clears the X Report in the current table
+     * @param xReportModel
+     * @return none
+     */
     private void clearXReportTable(DefaultTableModel xReportModel) {
         xReportModel.setRowCount(0);
-    }
-    
+    } 
 
+    /**
+     * Establishes a conenction to the database
+     * @param none
+     * @return Connection
+     */
     private Connection connectDatabase() {
         Connection connection = null;
         try {
@@ -173,6 +208,11 @@ public class XReportFeature extends JPanel {
         return connection;
     }
 
+    /**
+     * Clears the X Report in the Database
+     * @param connection
+     * @return none
+     */
     private void clearXReportTableInDatabase(Connection connection) {
         String query = "DELETE FROM x_report";
         try {
@@ -183,6 +223,18 @@ public class XReportFeature extends JPanel {
         }
     }
 
+    /**
+     * Saves the Z Report to the Database
+     * @param connection
+     * @param reportId
+     * @param startDate
+     * @param endDate
+     * @param salesSubtotal
+     * @param taxAmount
+     * @param totalSales
+     * @param totalTransactions
+     * @return none
+     */
     private void saveZReportToDatabase(Connection connection, int reportId, Date startDate, Date endDate, double salesSubtotal, double taxAmount, double totalSales, int totalTransactions) {
         String query = "INSERT INTO z_report (report_id, start_date, end_date, sales_subtotal, tax_amount, total_sales, total_transactions) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try {
@@ -199,9 +251,5 @@ public class XReportFeature extends JPanel {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-    
-    
-    
-    
+    }  
 }
