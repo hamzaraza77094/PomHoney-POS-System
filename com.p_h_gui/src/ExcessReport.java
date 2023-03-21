@@ -37,7 +37,7 @@ public class ExcessReport extends JPanel {
         restockTable = createRestockTable();
         restockScrollPane = new JScrollPane(restockTable);
         JPanel restockPanel = new JPanel(new BorderLayout());
-        restockPanel.setBorder(BorderFactory.createTitledBorder("Restock Report"));
+        restockPanel.setBorder(BorderFactory.createTitledBorder("Excess Report"));
         restockPanel.add(restockScrollPane, BorderLayout.CENTER);
 
         // Add Restock Report table to the panel
