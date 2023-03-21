@@ -10,7 +10,7 @@ import java.awt.event.ActionEvent;
 
 public class GUI extends JFrame{
     // private JFrame frame;
-    private MainPanel mainPanel;
+    // private MainPanel mainPanel;
     private NavPanel navPanel;
     private ManagerPanel managerPanel = null;
    
