@@ -6,15 +6,29 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
+/** 
+ * A class used to house the subPanels of the Sales Features
+ * @author Hamza Raza, Cameron Yoffe, Jacob Parker, Adam Vick
+*/
 public class SalesPanel extends JPanel {
 
     private JTable salesTable;
     private JScrollPane scrollPane;
 
+    /** 
+     * Cosntructor for the SalesPanel Class. Calls `initComponents()` to set the parameters of the panel.  
+     * @param none 
+     * @return JPanel
+    */
     public SalesPanel() {
         initComponents();
     }
 
+    /** 
+     * Used to set the paramaters of 'SalesPanel()'. 
+     * @param none
+     * @return JPanel
+    */
     private void initComponents() {
         setLayout(new BorderLayout());
     
@@ -36,7 +50,11 @@ public class SalesPanel extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
     
-
+    /**
+     * Creates the Sales Table to display the sales from Sales Bridge
+     * @param none
+     * @return JTable
+     */
     private JTable createSalesTable() {
         DefaultTableModel model = new DefaultTableModel();
         JTable table = new JTable(model);
@@ -78,6 +96,11 @@ public class SalesPanel extends JPanel {
         return table;
     }
 
+    /**
+     * Create and configure the Add button for the SalesPanel. Has `addActionListener()` functionality to add a sales item.
+     * @param none
+     * @return JButton
+     */
     private JButton createAddButton() {
         JButton addButton = new JButton("Add Order");
     
@@ -125,42 +148,50 @@ public class SalesPanel extends JPanel {
     
 
 
-    // Create and configure the Delete button
-private JButton createDeleteButton() {
-    JButton deleteButton = new JButton("Delete Order");
+    /**
+     * Create and configure the Delete button for SalesPanel. Has `addActionListener()` functionality to add a sales item.
+     * @param none
+     * @return JButton
+     */
+    private JButton createDeleteButton() {
+        JButton deleteButton = new JButton("Delete Order");
 
-    deleteButton.addActionListener(e -> {
-        // Implement code for deleting an order
-        int selectedRow = salesTable.getSelectedRow();
-        if (selectedRow != -1) {
-            int orderId = (int) salesTable.getValueAt(selectedRow, 0);
+        deleteButton.addActionListener(e -> {
+            // Implement code for deleting an order
+            int selectedRow = salesTable.getSelectedRow();
+            if (selectedRow != -1) {
+                int orderId = (int) salesTable.getValueAt(selectedRow, 0);
 
-            try {
-                Connection conn = Login.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement("DELETE FROM salesbridge WHERE orderid = ?");
-                pstmt.setInt(1, orderId);
-                pstmt.executeUpdate();
+                try {
+                    Connection conn = Login.getConnection();
+                    PreparedStatement pstmt = conn.prepareStatement("DELETE FROM salesbridge WHERE orderid = ?");
+                    pstmt.setInt(1, orderId);
+                    pstmt.executeUpdate();
 
-                pstmt.close();
-                conn.close();
+                    pstmt.close();
+                    conn.close();
 
-                // Refresh the sales table
-                DefaultTableModel model = (DefaultTableModel) salesTable.getModel();
-                model.removeRow(selectedRow);
-            } catch (SQLException ex) {
-                System.out.println("Error connecting to database: " + ex.getMessage());
+                    // Refresh the sales table
+                    DefaultTableModel model = (DefaultTableModel) salesTable.getModel();
+                    model.removeRow(selectedRow);
+                } catch (SQLException ex) {
+                    System.out.println("Error connecting to database: " + ex.getMessage());
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Please select an order to delete.");
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "Please select an order to delete.");
-        }
-        // Refresh the sales table
-        refreshSalesTable();
-    });
+            // Refresh the sales table
+            refreshSalesTable();
+        });
 
-    return deleteButton;
-}
+        return deleteButton;
+    }
 
-// Create and configure the Update button
+    /**
+     * Create and configure the Update button for the SalesPanel. Has `addActionListener()` functionality to add a sales item.
+     * @param none
+     * @return JButton
+     */
     private JButton createUpdateButton() {
         JButton updateButton = new JButton("Update Order");
 
@@ -210,7 +241,11 @@ private JButton createDeleteButton() {
         return updateButton;
     }
 
-
+    /**
+     * Used to update the table w/ new information if needed. Updates the current SalesTable.
+     * @param none
+     * @return none
+     */
     private void refreshSalesTable() {
         DefaultTableModel model = (DefaultTableModel) salesTable.getModel();
         model.setRowCount(0);
@@ -262,7 +297,11 @@ private JButton createDeleteButton() {
         }
     }
     
-
+     /**
+     * Black Magic Witchcraft
+     * @param none
+     * @return JPanel
+     */
     private JButton createCompileButton() {
         JButton compileButton = new JButton("Compile");
     

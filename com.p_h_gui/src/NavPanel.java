@@ -4,11 +4,21 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/** 
+ * Class used to hold the buttons to switch between different menus.
+ * @author Hamza Raza, Cameron Yoffe, Jacob Parker, Adam Vick 
+*/
 public class NavPanel extends JPanel{
 
     JButton buttons[] = new JButton[5];
     JLabel tempLabel;
 
+    /**
+     * Creates a side panel on the right of the program that will allow the user to navigate the program. Takes `isManger` to determine if the user is a manager and displays
+     * the correct buttons for the user based on employeement level.
+     * @param isManager
+     * @return JPanel
+     */
     public NavPanel(boolean isManager){
         // boolean isManager = false;
         setLayout(new GridBagLayout());
@@ -124,6 +134,11 @@ public class NavPanel extends JPanel{
         System.out.print("Nav Panel Created\n");
     } // Constructor for NavPanel
 
+    /**
+     * Used to set the parameters of the 'Grid Bag Layout'.
+     * @param c
+     * @return GridBagConstriants
+     */
     private GridBagConstraints setGridBagConstraints(GridBagConstraints c){
         c.fill = GridBagConstraints.BOTH;
         c.weightx = 1;

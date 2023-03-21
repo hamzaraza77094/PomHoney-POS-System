@@ -5,15 +5,29 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
+/** 
+ * A class used to satisfy the Sales Report Requirement. 
+ * @author Hamza Raza, Cameron Yoffe, Jacob Parker, Adam Vick
+*/
 public class SalesReport extends JPanel {
 
     private JTable salesTable;
     private JScrollPane scrollPane;
 
+    /** 
+     * Constructor for the SalesReport Class. Calls `initComponents()` to set the parameters of the panel.  
+     * @param none 
+     * @return JPanel
+    */
     public SalesReport() {
         initComponents();
     }
 
+    /** 
+     * Used to set the paramaters of 'RestockReport()'. 
+     * @param none
+     * @return JPanel
+    */
     private void initComponents() {
         setLayout(new BorderLayout());
 
@@ -35,6 +49,11 @@ public class SalesReport extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Creates the JTable that will display the sales report
+     * @param none
+     * @return JTable
+     */
     private JTable createSalesTable() {
         DefaultTableModel model = new DefaultTableModel();
         JTable table = new JTable(model);
@@ -184,6 +203,10 @@ public class SalesReport extends JPanel {
     //     return updateButton;
     // }
 
+    /**
+     * Button used to create the actual report. As an actionListener for functionality
+     * @return JButton
+     */
     private JButton createSalesReportButton() {
         JButton salesReportButton = new JButton("Sales report");
 
@@ -197,6 +220,12 @@ public class SalesReport extends JPanel {
         return salesReportButton;
     }
 
+    /**
+     * Refreshes the Sales Table w/ the Sales Report.
+     * @param aDate
+     * @param bDate
+     * @return none
+     */
     private void refreshSalesTable(String aDate, String bDate) {
         DefaultTableModel model = (DefaultTableModel) salesTable.getModel();
         model.setRowCount(0);

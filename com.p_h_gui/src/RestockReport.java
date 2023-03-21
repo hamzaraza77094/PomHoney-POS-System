@@ -6,15 +6,29 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/** 
+ * A class used to satisfy the Restock Report Requirement. 
+ * @author Hamza Raza, Cameron Yoffe, Jacob Parker, Adam Vick
+*/
 public class RestockReport extends JPanel {
 
     private JTable restockTable;
     private JScrollPane restockScrollPane;
 
+    /** 
+     * Constructor for the RestockPanel Class. Calls `initComponents()` to set the parameters of the panel.  
+     * @param none 
+     * @return JPanel
+    */
     public RestockReport() {
         initComponents();
     }
-
+    
+    /** 
+     * Used to set the paramaters of 'RestockReport()'. 
+     * @param none
+     * @return JPanel
+    */
     private void initComponents() {
         setLayout(new BorderLayout());
 
@@ -29,6 +43,11 @@ public class RestockReport extends JPanel {
         add(restockPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * Creates the JTable that will display the restock report
+     * @param none
+     * @return JTable
+     */
     private JTable createRestockTable() {
         DefaultTableModel restockModel = new DefaultTableModel(new Object[]{"Item ID", "Item Name", "Item Amount", "Item Measurement Type", "Minimum"}, 0);
         JTable restockTable = new JTable(restockModel);
@@ -55,7 +74,12 @@ public class RestockReport extends JPanel {
 
         return restockTable;
     }
-
+    
+    /**
+     * Establishes a connection to the Database
+     * @param none
+     * @return Connection
+     */
     private Connection connectDatabase() {
         Connection connection = null;
         try {
