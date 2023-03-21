@@ -1,3 +1,5 @@
+import java.util.Map;
+import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -184,27 +186,189 @@ public class ExcessReportPanel extends JPanel {
         return updateButton;
     }
     
-    private JButton createExcessReportButton() {
-        JButton exButt = new JButton(); //Man I never want see this again.
+    // private JButton createExcessReportButton() {
+    //     JButton exButt = new JButton(); //Man I never want see this again.
 
-        exButt.addActionListener(e -> {
-            // 1) Prompt the user for a start date.
+    //     exButt.addActionListener(e -> {
+    //         // 1) Prompt the user for a start date.
 
-            // 2) For every date in the timeframe: start date to -> current date...
-            //    i) get order const str
-            //   ii) Parse for item
-            //  iii) Tally item
+    //         // 2) For every date in the timeframe: start date to -> current date...
+    //         //    i) get order const str
+    //         //   ii) Parse for item
+    //         //  iii) Tally item
 
-            // 3) Get minimum amount for every value from Inventory Minium amounts, store the value.
+    //         // 3) Get minimum amount for every value from Inventory Minium amounts, store the value.
 
-            // 4) Run the calculations for the itemQuantity > 90%, Display them in a new 'inventory like' menu
-            //  Note: This may require have another function that's like `createNewInventoryPanel`, where it takes in a array of the item ids to be displayed and displays them.
+    //         // 4) Run the calculations for the itemQuantity > 90%, Display them in a new 'inventory like' menu
+    //         //  Note: This may require have another function that's like `createNewInventoryPanel`, where it takes in a array of the item ids to be displayed and displays them.
 
-        });
+    //     });
         
 
-        return exButt;
+    //     return exButt;
+    // }
+    // private JButton createExcessReportButton() {
+    //     JButton excessReportButton = new JButton("Excess Report");
+    
+    //     excessReportButton.addActionListener(e -> {
+    //         String startDateStr = JOptionPane.showInputDialog("Enter start date (YYYY-MM-DD):");
+    //         Date startDate = Date.valueOf(startDateStr);
+    
+    //         Map<String, Integer> itemTallies = new HashMap<>();
+    //         Map<String, Integer> itemMinimums = new HashMap<>();
+    
+    //         try {
+    //             Connection conn = Login.getConnection();
+    
+    //             // Get item tallies
+    //             Statement stmt = conn.createStatement();
+    //             ResultSet rs = stmt.executeQuery("SELECT * FROM dailySales WHERE date >= '" + startDateStr + "' ORDER BY orderid ASC");
+    
+    //             while (rs.next()) {
+    //                 String orderContents = rs.getString("ordercontents");
+    
+    //                 // Assuming orderContents is a comma-separated list of item names
+    //                 String[] items = orderContents.split(",");
+    
+    //                 for (String item : items) {
+    //                     item = item.trim();
+    //                     itemTallies.put(item, itemTallies.getOrDefault(item, 0) + 1);
+    //                 }
+    //             }
+    
+    //             // Get minimum amounts
+    //             stmt = conn.createStatement();
+    //             rs = stmt.executeQuery("SELECT item_name, minimum FROM inventory");
+    
+    //             while (rs.next()) {
+    //                 String itemName = rs.getString("item_name");
+    //                 int minimum = rs.getInt("minimum");
+    //                 itemMinimums.put(itemName, minimum);
+    //             }
+    
+    //             // Display excess items
+    //             StringBuilder excessItems = new StringBuilder("Excess items:\n");
+    //             for (String itemName : itemTallies.keySet()) {
+    //                 int tally = itemTallies.get(itemName);
+    //                 int minimum = itemMinimums.getOrDefault(itemName, 0);
+    
+    //                 if (tally >= 0.9 * minimum) {
+    //                     excessItems.append(itemName).append(": ").append(tally).append("\n");
+    //                 }
+    //             }
+    
+    //             JOptionPane.showMessageDialog(null, excessItems.toString());
+    
+    //             rs.close();
+    //             stmt.close();
+    //             conn.close();
+    //         } catch (SQLException ex) {
+    //             System.out.println("Error connecting to database: " + ex.getMessage());
+    //         }
+    //     });
+    
+    //     return excessReportButton;
+    // }
+    
+
+    private JButton createExcessReportButton() {
+        JButton excessReportButton = new JButton("Excess Report");
+    
+        excessReportButton.addActionListener(e -> {
+            String startDateStr = JOptionPane.showInputDialog("Enter start date (YYYY-MM-DD):");
+            Date startDate = Date.valueOf(startDateStr);
+    
+            Map<String, Integer> itemTallies = new HashMap<>();
+            Map<String, Integer> itemMinimums = new HashMap<>();
+            Map<String, Integer> itemInventory = new HashMap<>();
+    
+            try {
+                Connection conn = Login.getConnection();
+    
+                // Get item minimums and inventory
+                Statement inventoryStmt = conn.createStatement();
+                ResultSet inventoryRs = inventoryStmt.executeQuery("SELECT * FROM inventory");
+    
+                while (inventoryRs.next()) {
+                    String itemId = inventoryRs.getString("item_id");
+                    int minimum = inventoryRs.getInt("minimum");
+                    int inventory = inventoryRs.getInt("item_amount");
+    
+                    itemMinimums.put(itemId, minimum);
+                    itemInventory.put(itemId, inventory);
+                }
+    
+                // Get orders from the given start date to the current date
+                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM dailySales WHERE date >= ?");
+                pstmt.setDate(1, startDate);
+                ResultSet rs = pstmt.executeQuery();
+    
+                while (rs.next()) {
+                    String orderContents = rs.getString("ordercontents");
+                    String[] items = orderContents.split(", ");
+
+                    for (String item : items) {
+                        String[] itemParts = item.trim().split(" ");
+                        int quantity = 1;
+                        String itemName;
+
+                        if (itemParts.length > 1 && isNumeric(itemParts[0])) {
+                            quantity = Integer.parseInt(itemParts[0]);
+                            itemName = item.substring(item.indexOf(' ') + 1).trim();
+                        } else {
+                            itemName = item;
+                        }
+
+                        // Update item tallies
+                        itemTallies.put(itemName, itemTallies.getOrDefault(itemName, 0) + quantity);
+                    }
+
+
+                    
+                }
+    
+                rs.close();
+                pstmt.close();
+                inventoryRs.close();
+                inventoryStmt.close();
+                conn.close();
+            } catch (SQLException ex) {
+                System.out.println("Error connecting to database: " + ex.getMessage());
+            }
+    
+            // Display items that sold less than 10% of their inventory
+            DefaultTableModel model = new DefaultTableModel();
+            JTable excessTable = new JTable(model);
+    
+            model.addColumn("Item ID");
+            model.addColumn("Item Sold");
+            model.addColumn("Inventory");
+            model.addColumn("Percentage");
+    
+            for (String itemId : itemTallies.keySet()) {
+                int sold = itemTallies.getOrDefault(itemId, 0);
+                int inventory = itemInventory.get(itemId);
+                double percentage = (double) sold / inventory * 100;
+    
+                if (percentage < 10) {
+                    model.addRow(new Object[]{itemId, sold, inventory, String.format("%.2f", percentage) + "%"});
+                }
+            }
+    
+            // Show the excess report in a new window
+            JFrame excessReportFrame = new JFrame("Excess Report");
+            excessReportFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            excessReportFrame.setSize(600, 400);
+    
+            JScrollPane scrollPane = new JScrollPane(excessTable);
+            excessReportFrame.add(scrollPane);
+    
+            excessReportFrame.setVisible(true);
+        });
+    
+        return excessReportButton;
     }
+    
 
     private void refreshDailySalesTable() {
         DefaultTableModel model = (DefaultTableModel) dailySalesTable.getModel();
@@ -256,5 +420,37 @@ public class ExcessReportPanel extends JPanel {
             }
         }
     }
+
+    private Map<String, Integer> parseOrderContents(String orderContents) {
+        Map<String, Integer> itemQuantities = new HashMap<>();
+    
+        String[] items = orderContents.split(", ");
+        for (String item : items) {
+            String[] itemParts = item.trim().split(" ");
+            int quantity = 1;
+            String itemName;
+    
+            if (itemParts.length > 1 && isNumeric(itemParts[0])) {
+                quantity = Integer.parseInt(itemParts[0]);
+                itemName = item.substring(item.indexOf(' ') + 1).trim();
+            } else {
+                itemName = item;
+            }
+    
+            itemQuantities.put(itemName, itemQuantities.getOrDefault(itemName, 0) + quantity);
+        }
+    
+        return itemQuantities;
+    }
+    
+    private boolean isNumeric(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+    
     
 }
