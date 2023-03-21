@@ -6,15 +6,30 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
+/**
+* This class is used to create the Employee Panel
+* @author Hamza Raza, Cameron Yoffe, Jacob Parker, Adam Vick
+*/
+
 public class EmployeePanel extends JPanel {
 
     private JTable employeeTable;
     private JScrollPane scrollPane;
 
+    /**
+    * constructor for the EmployeePanel class, calls initComponents()
+    * @param none
+    * @return JTable
+    */
     public EmployeePanel() {
         initComponents();
     }
 
+    /**
+    * Creates the display and buttons for the employee table panel
+    * @param none
+    * @return JTable
+    */
     private void initComponents() {
         setLayout(new BorderLayout());
 
@@ -34,6 +49,11 @@ public class EmployeePanel extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    /**
+    * creates the employee table containing the employee information from our database to be displayed on the Employee Panel
+    * @param none
+    * @return JTable
+    */
     private JTable createEmployeeTable() {
         DefaultTableModel model = new DefaultTableModel();
         JTable table = new JTable(model);
@@ -73,61 +93,11 @@ public class EmployeePanel extends JPanel {
         return table;
     }    
 
-    // Create and configure the Add button
-    // private JButton createAddButton() {
-    //     JButton addButton = new JButton("Add Employee");
-    
-    //     addButton.addActionListener(e -> {
-    //         // Prompt user to input new employee data
-    //         String employeeName = JOptionPane.showInputDialog("Enter employee name:");
-    //         String employeeDob = JOptionPane.showInputDialog("Enter employee DOB (MM-DD-YYYY):");
-    //         String isManagerStr = JOptionPane.showInputDialog("Enter true if employee is a manager, false otherwise:");
-    //         String employeeSalary = JOptionPane.showInputDialog("Enter employee salary:");
-    
-    //         // Insert new employee into the employee table
-    //         PreparedStatement pstmt = null;
-    //         Connection conn = null;
-    //         try {
-    //             conn = Login.getConnection();
-    
-    //             // Retrieve the highest employee_id value from the employee table
-    //             Statement stmt = conn.createStatement();
-    //             ResultSet rs = stmt.executeQuery("SELECT MAX(employee_id) FROM employees");
-    //             int newId = 1;
-    //             if (rs.next()) {
-    //                 newId = rs.getInt(1) + 1;
-    //             }
-    
-    //             // Insert the new employee with the incremented employee_id value
-    //             pstmt = conn.prepareStatement("INSERT INTO employee (employee_id, employeename, employeedob, ismanager, employeesalary) VALUES (?, ?, ?, ?, ?)");
-    //             pstmt.setInt(1, newId);
-    //             pstmt.setString(2, employeeName);
-    //             pstmt.setDate(3, Date.valueOf(employeeDob));
-    //             pstmt.setBoolean(4, Boolean.parseBoolean(isManagerStr));
-    //             pstmt.setDouble(5, Double.parseDouble(employeeSalary));
-    //             pstmt.executeUpdate();
-    
-    //             pstmt.close();
-    //             stmt.close();
-    //             rs.close();
-    //         } catch (SQLException ex) {
-    //             System.out.println("Error connecting to database: " + ex.getMessage());
-    //         } finally {
-    //             if (conn != null) {
-    //                 try {
-    //                     conn.close();
-    //                 } catch (SQLException ex) {
-    //                     System.out.println("Error closing database connection: " + ex.getMessage());
-    //                 }
-    //             }
-    //         }
-    
-    //         // Refresh the employee table
-    //         refreshEmployeeTable();
-    //     });
-    
-    //     return addButton;
-    // }
+    /**
+    * code for creating the add button, called by initComponents()
+    * @param none
+    * @return addButton
+    */
     private JButton createAddButton() {
         JButton addButton = new JButton("Add Employee");
     
@@ -184,7 +154,11 @@ public class EmployeePanel extends JPanel {
     
 
 
-    // Create and configure the Delete button
+    /**
+    * code for creating the Delete button, called by initComponents()
+    * @param none
+    * @return deleteButton
+    */
     private JButton createDeleteButton() {
         JButton deleteButton = new JButton("Delete Employee");
     
@@ -220,7 +194,11 @@ public class EmployeePanel extends JPanel {
     }
     
 
-    // Create and configure the Update button
+    /**
+    * code for creating the Update button, called by initComponents()
+    * @param none
+    * @return updateButton
+    */
     private JButton createUpdateButton() {
         JButton updateButton = new JButton("Update Employee");
     
@@ -269,7 +247,11 @@ public class EmployeePanel extends JPanel {
     }
     
 
-
+    /**
+    * refreshes the employee table panel to contain the most up-to-date information from the database table, called when an employee is added, deleted, or updated
+    * @param none
+    * @return none
+    */
     private void refreshEmployeeTable() {
         DefaultTableModel model = (DefaultTableModel) employeeTable.getModel();
         model.setRowCount(0);

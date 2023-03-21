@@ -6,15 +6,30 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+* This class is used to generate the excess report based on sales performance
+* @author Hamza Raza, Cameron Yoffe, Jacob Parker, Adam Vick
+*/
+
 public class ExcessReport extends JPanel {
 
     private JTable restockTable;
     private JScrollPane restockScrollPane;
 
+    /**
+    * constructor for the ExcessReport class, calls initComponents()
+    * @param none
+    * @return JPanel
+    */
     public ExcessReport() {
         initComponents();
     }
 
+    /**
+    * creates the display for the restock table
+    * @param none
+    * @return JPanel
+    */
     private void initComponents() {
         setLayout(new BorderLayout());
 
@@ -29,6 +44,12 @@ public class ExcessReport extends JPanel {
         add(restockPanel, BorderLayout.CENTER);
     }
 
+    /**
+    * This function creates a restock table showing how many of each inventory item have been used so the correct amount is
+    * purchased when the manager orders supplies for a restock
+    * @param none
+    * @return none
+    */
     private JTable createRestockTable() {
         DefaultTableModel restockModel = new DefaultTableModel(new Object[]{"Item ID", "Item Name", "Item Amount", "Item Measurement Type", "Minimum", "Maximum"}, 0);
         JTable restockTable = new JTable(restockModel);
@@ -57,6 +78,11 @@ public class ExcessReport extends JPanel {
         return restockTable;
     }
 
+    /**
+    * function used to connect to the database so the program can communicate with it
+    * @param none
+    * @return Connection
+    */
     private Connection connectDatabase() {
         Connection connection = null;
         try {

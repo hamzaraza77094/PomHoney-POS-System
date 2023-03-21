@@ -3,6 +3,11 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
+
+/**
+* This class is used for the display and functionality of the login window
+* @author Hamza Raza, Cameron Yoffe, Jacob Parker, Adam Vick
+*/
 public class Login extends JFrame implements ActionListener {
     private JTextField usernameField;
     private JPasswordField passwordField;
@@ -11,6 +16,11 @@ public class Login extends JFrame implements ActionListener {
     private JPanel numberPad;
     private String password = "";
 
+    /**
+    * constructor for the Login page, displays window for password entering
+    * @param none
+    * @return JPanel
+    */
     public Login() {
         super("Login");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -48,6 +58,11 @@ public class Login extends JFrame implements ActionListener {
         // establish database connection
     }
 
+    /**
+    * Used to handle the various button presses that can occur on the login page12
+    * @param ActionEvent an action event 'e'
+    * @return none
+    */
     public void actionPerformed(ActionEvent e) {
         String button = e.getActionCommand();
         if (button.equals("<-")) {
@@ -101,6 +116,11 @@ public class Login extends JFrame implements ActionListener {
         }
     }
 
+    /**
+    * This function establishes a connection with our database using the master login
+    * @param none
+    * @return conn which is a database connection
+    */
     public static Connection getConnection() throws SQLException {
         Connection conn = DriverManager.getConnection("jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_epsilon", "csce315331_epsilon_master", "EPSILON");
         return conn;

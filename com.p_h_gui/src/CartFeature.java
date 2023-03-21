@@ -6,6 +6,10 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+* This class defines the functionality related to the server creating an order for the customer based on what they want
+* @author Hamza Raza, Cameron Yoffe, Jacob Parker, Adam Vick
+*/
 public class CartFeature extends JPanel {
 
     private JTable MenuTable;
@@ -19,10 +23,20 @@ public class CartFeature extends JPanel {
     Integer ingredients_ID_Array[];
     Double ingredients_Amount_Array[];
 
+    /**
+    * Constructor for the CartFeature class, calls initComponents()
+    * @param none
+    * @return JTable
+    */
     public CartFeature() {
         initComponents();
     }
 
+    /**
+    * Initializes the display and buttons used to add menu items to the cart
+    * @param none
+    * @return JTable
+    */
     private void initComponents() {
         setLayout(new BorderLayout());
 
@@ -59,8 +73,12 @@ public class CartFeature extends JPanel {
         menuItemIds = new ArrayList<>();
     }
 
-    // ... (rest of the code for createMenuTable remains unchanged)
-    private JTable createMenuTable() {
+    /**
+    * Creates the actual table containing the information from the menu table in the database, to be displayed on the Cart Panel
+    * allowing server to select items to be added to the cart
+    * @param none
+    * @return JTable
+    */    private JTable createMenuTable() {
         DefaultTableModel model = new DefaultTableModel();
         JTable table = new JTable(model);
     
@@ -103,7 +121,11 @@ public class CartFeature extends JPanel {
         return table;
     }
 
-    // Create and configure the Add button
+    /**
+    * code for creating the add button, called by initComponents()
+    * @param none
+    * @return addButton
+    */
     private JButton createAddButton() {
         JButton addButton = new JButton("Add Item");
 
@@ -125,7 +147,11 @@ public class CartFeature extends JPanel {
         return addButton;
     }
 
-    // Create and configure the Delete button
+    /**
+    * code for creating the Delete button, called by initComponents()
+    * @param none
+    * @return deleteButton
+    */
     private JButton createDeleteButton() {
         JButton deleteButton = new JButton("Delete Item");
 
@@ -144,6 +170,11 @@ public class CartFeature extends JPanel {
     }
 
 
+    /**
+    * function that updates the subtotal, tax, and total cost displayed on the cart, called whenever an item is added to or removed from the cart
+    * @param none
+    * @return none
+    */
     private void updateTotals() {
         double salesSubtotal = 0;
         double taxRate = 0.0625;
@@ -160,6 +191,11 @@ public class CartFeature extends JPanel {
         grandTotalLabel.setText(String.format("Grand Total: $%.2f", grandTotal));
     }
 
+    /**
+    * code for creating the submit order button, called by initComponents()
+    * @param none
+    * @return submitOrderButton
+    */
     private JButton createSubmitOrderButton() {
         JButton submitOrderButton = new JButton("Submit Order");
     
@@ -224,7 +260,11 @@ public class CartFeature extends JPanel {
 
 
 
-    // function for detracting ingredients for each item ordered
+    /**
+    * function for detracting ingredients for each item ordered
+    * @param none
+    * @return none
+    */
     public void detractIngredients(ArrayList<Integer> order_Items) { 
         for (int i = 0; i < order_Items.size(); ++i) {
             if (order_Items.get(i) == 1) { // chicken gyro
@@ -259,6 +299,33 @@ public class CartFeature extends JPanel {
             } else if (order_Items.get(i) == 9) { // lamb bowl
                 ingredients_ID_Array = new Integer[] {19, 2, 4, 5, 7, 16, 17};
                 ingredients_Amount_Array = new Double[] {1.0, 0.25, 0.25, 0.5, 0.01, 0.05, 0.1};
+            } else if (order_Items.get(i) == 10) { // coca-cola soda
+                ingredients_ID_Array = new Integer[] {11};
+                ingredients_Amount_Array = new Double[] {0.125};
+            } else if (order_Items.get(i) == 11) { // sprite soda
+                ingredients_ID_Array = new Integer[] {12};
+                ingredients_Amount_Array = new Double[] {0.125};
+            } else if (order_Items.get(i) == 12) { // ice tea
+                ingredients_ID_Array = new Integer[] {14};
+                ingredients_Amount_Array = new Double[] {0.125};
+            } else if (order_Items.get(i) == 13) { // tomato
+                ingredients_ID_Array = new Integer[] {10};
+                ingredients_Amount_Array = new Double[] {0.1};
+            } else if (order_Items.get(i) == 14) { // green pepper
+                ingredients_ID_Array = new Integer[] {26};
+                ingredients_Amount_Array = new Double[] {0.1};
+            } else if (order_Items.get(i) == 15) { // onions
+                ingredients_ID_Array = new Integer[] {5};
+                ingredients_Amount_Array = new Double[] {0.1};
+            } else if (order_Items.get(i) == 16) { // jalapenos
+                ingredients_ID_Array = new Integer[] {27};
+                ingredients_Amount_Array = new Double[] {0.1};
+            } else if (order_Items.get(i) == 17) { // olives
+                ingredients_ID_Array = new Integer[] {28};
+                ingredients_Amount_Array = new Double[] {0.1};
+            } else if (order_Items.get(i) == 18) { // white sauce
+                ingredients_ID_Array = new Integer[] {29};
+                ingredients_Amount_Array = new Double[] {0.05};
             }
 
             for (int j = 0; j < ingredients_ID_Array.length; ++j) {
@@ -272,12 +339,21 @@ public class CartFeature extends JPanel {
         }
     }
 
+    /**
+    * function for clearing the cart to start the customer's order over
+    * @param none
+    * @return none
+    */
     private void clearCart() {
         DefaultTableModel cartModel = (DefaultTableModel) CartTable.getModel();
         cartModel.setRowCount(0);
     }
 
-    // Create and configure the Reset Cart button
+    /**
+    * code for creating the button used to clear the cart
+    * @param none
+    * @return resetCartButton
+    */
     private JButton createResetCartButton() {
         JButton resetCartButton = new JButton("Reset Cart");
 

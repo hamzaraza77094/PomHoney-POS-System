@@ -2,6 +2,11 @@
 import javax.swing.*;
 import java.awt.*;
 
+/** 
+ * This class sets up the panel containing the anaylsis features accesible by users
+ * @author Hamza Raza, Cameron Yoffe, Jacob Parker, Adam Vick
+*/
+
 public class AnalysisPanel extends JPanel {
     private JPanel cards;
     private CardLayout cardLayout;
@@ -10,10 +15,20 @@ public class AnalysisPanel extends JPanel {
     private RestockReport restockReport;
     private ExcessReport excessReportPanel;
 
+    /**
+    * constructor for the AnalysisPanel class which calls the initComponents() function 
+    * @param none
+    * @return JPanel
+    */
     public AnalysisPanel() {
         initComponents();
     }
 
+    /**
+    * creates the display and buttons within the analysis panel, defines ActionListeners for each button
+    * @param none
+    * @return JPanel
+    */
     private void initComponents() {
         setLayout(new BorderLayout());
 

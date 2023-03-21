@@ -5,15 +5,29 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
+/**
+* This class defines the Inventory Panel used to display the inventory table on our application
+* @author Hamza Raza, Cameron Yoffe, Jacob Parker, Adam Vick
+*/
 public class InventoryPanel extends JPanel {
 
     private JTable inventoryTable;
     private JScrollPane scrollPane;
 
+    /**
+    * constructor for the InventoryPanel class, calls initComponents()
+    * @param none
+    * @return JPanel
+    */
     public InventoryPanel() {
         initComponents();
     }
 
+    /**
+    * Creates the display and buttons for the inventory table panel
+    * @param none
+    * @return JPanel
+    */
     private void initComponents() {
         setLayout(new BorderLayout());
 
@@ -36,7 +50,11 @@ public class InventoryPanel extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-
+    /**
+    * Creates the actual table containing the information from the inventory table in the database, to be displayed on the Inventory Panel
+    * @param none
+    * @return JTable
+    */
     private JTable createInventoryTable() {
         DefaultTableModel model = new DefaultTableModel();
         JTable table = new JTable(model);
@@ -76,7 +94,11 @@ public class InventoryPanel extends JPanel {
         return table;
     }
     
-    
+    /**
+    * code for creating the add button, called by initComponents()
+    * @param none
+    * @return addButton
+    */
     private JButton createAddButton() {
         JButton addButton = new JButton("Add Item");
     
@@ -136,7 +158,11 @@ public class InventoryPanel extends JPanel {
     }
 
 
-    // Create and configure the Delete button
+    /**
+    * code for creating the Delete button, called by initComponents()
+    * @param none
+    * @return deleteButton
+    */
     private JButton createDeleteButton() {
         JButton deleteButton = new JButton("Delete Item");
 
@@ -171,6 +197,11 @@ public class InventoryPanel extends JPanel {
         return deleteButton;
     }
 
+    /**
+    * code for creating the Update button, called by initComponents()
+    * @param none
+    * @return updateButton
+    */
     private JButton createUpdateButton() {
         JButton updateButton = new JButton("Update Item");
     
@@ -221,7 +252,11 @@ public class InventoryPanel extends JPanel {
         return updateButton;
     }
 
-
+    /**
+    * code for creating the inventory reset button, called by initComponents()
+    * @param none
+    * @return rInvCountButton
+    */
     private JButton createResetInventoryCountButton() {
         JButton rInvCountButton = new JButton("RST INV #s");
     
@@ -261,6 +296,11 @@ public class InventoryPanel extends JPanel {
         return rInvCountButton;
     }
 
+    /**
+    * function that resets inventory levels to a specific level, called when rInvCountButton is pressed, used to simulate a restock
+    * @param none
+    * @return none
+    */
     private void refreshInventoryTable() {
         DefaultTableModel model = (DefaultTableModel) inventoryTable.getModel();
         model.setRowCount(0);

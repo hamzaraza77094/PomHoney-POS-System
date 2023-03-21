@@ -4,36 +4,21 @@ import javax.swing.BorderFactory;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-// import javax.swing.border.Border;
 
-
-
+/**
+* This class sets up the GUI display for our application
+* @author Hamza Raza, Cameron Yoffe, Jacob Parker, Adam Vick
+*/
 public class GUI extends JFrame{
-    // private JFrame frame;
-    // private MainPanel mainPanel;
+
     private NavPanel navPanel;
     private ManagerPanel managerPanel = null;
-   
-    // public GUI(){
-    //     setLayout(new GridBagLayout());
-    //     GridBagConstraints c = new GridBagConstraints();
-    //     c = setGridBagConstraints(c);
-
-    //     navPanel = new NavPanel();
-    //     navPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-    //     add(navPanel, c);
-
-    //     mainPanel = new MainPanel(); // This panel SHOULD CHANGE based on what is needed by the user.
-    //     mainPanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
-    //     c.gridx = 1;
-    //     c.gridy = 0;
-    //     c. gridwidth = 2;
-    //     add(mainPanel, c);
-
-
-    //     setGUIFrame();
         
-    // } // Contructor
+    /**
+    * constructor for the GUI panel, displays manager panel and different buttons if a manager is using the program
+    * @param isManager a boolean for if the user is a manager or not (affects what will be displayed)
+    * @return JPanel
+    */
     public GUI(boolean isManager) {
         super("My Restaurant");
     
@@ -71,7 +56,13 @@ public class GUI extends JFrame{
         
     }
     
+    /**
+    * takes in a grid constraint, modifies the settings within it, then returns the updated grid constraint
+    * @param GridBagConstraint 
+    * @return GridBagConstraint 
+    */
     private GridBagConstraints setGridBagConstraints(GridBagConstraints c){
+        System.out.println("GRIDBAGCONSTRAINTS USED");
         c.fill = GridBagConstraints.VERTICAL;
         c.weightx = 1/6.0;
         c.gridx = 0; // Position the first button at column 0
@@ -82,6 +73,11 @@ public class GUI extends JFrame{
         return c;
     } // Moved constraints to clean code
 
+    /**
+    * Frame creation settings for the GUI panel
+    * @param none
+    * @return none
+    */
     private void setGUIFrame(){
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -3,15 +3,29 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.*;
 
+/**
+* This class is used to display the daily sales table panel on our application 
+* @author Hamza Raza, Cameron Yoffe, Jacob Parker, Adam Vick
+*/
 public class DailySalesPanel extends JPanel {
 
     private JTable dailySalesTable;
     private JScrollPane scrollPane;
 
+    /**
+    * Constructor for the DailySalesPanel class, calls initComponents()
+    * @param none
+    * @return JTable
+    */
     public DailySalesPanel() {
         initComponents();
     }
 
+    /**
+    * initializes display and buttons for the daily sales table
+    * @param none
+    * @return JTable
+    */
     private void initComponents() {
         setLayout(new BorderLayout());
     
@@ -30,6 +44,12 @@ public class DailySalesPanel extends JPanel {
     
         add(buttonPanel, BorderLayout.SOUTH);
     }
+
+    /**
+    * Creates the actual table containing the information from the daily sales table in the database, to be displayed on the Daily Sales Panel
+    * @param none
+    * @return JTable
+    */
     private JTable createDailySalesTable() {
         DefaultTableModel model = new DefaultTableModel();
         JTable table = new JTable(model);
@@ -68,6 +88,11 @@ public class DailySalesPanel extends JPanel {
         return table;
     }
 
+    /**
+    * code for creating the add button, called by initComponents()
+    * @param none
+    * @return addButton
+    */
     private JButton createAddButton() {
         JButton addButton = new JButton("Add Order");
 
@@ -112,6 +137,11 @@ public class DailySalesPanel extends JPanel {
         return addButton;
     }
 
+    /**
+    * code for creating the Delete button, called by initComponents()
+    * @param none
+    * @return deleteButton
+    */
     private JButton createDeleteButton() {
         JButton deleteButton = new JButton("Delete Order");
 
@@ -141,6 +171,11 @@ public class DailySalesPanel extends JPanel {
         return deleteButton;
     }
 
+    /**
+    * code for creating the Update button, called by initComponents()
+    * @param none
+    * @return updateButton
+    */
     private JButton createUpdateButton() {
         JButton updateButton = new JButton("Update Order");
     
@@ -187,6 +222,11 @@ public class DailySalesPanel extends JPanel {
         return updateButton;
     }
     
+    /**
+    * function that refreshes display of daily sales table, called when add, delete, or update buttons are pressed
+    * @param none
+    * @return none
+    */
     private void refreshDailySalesTable() {
         DefaultTableModel model = (DefaultTableModel) dailySalesTable.getModel();
         model.setRowCount(0);
