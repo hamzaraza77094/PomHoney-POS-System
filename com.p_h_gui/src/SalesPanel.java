@@ -336,13 +336,18 @@ public class SalesPanel extends JPanel {
     
                 // 3. Append the data from the salesbridge table to the x_report table
                 String appendXReportSql = "WITH aggregated_sales AS ( " +
-                "SELECT date, SUM(ordersubtotal) AS ordersubtotal, SUM(salestax) AS salestax, SUM(total) AS total, COUNT(*) AS total_transactions " +
-                "FROM salesbridge " +
+                "SELECT date, SUM(ordersubtotal) AS ordersubtotal, SUM(salestax) AS salestax, SUM(total) AS total, SUM(total_transactions) AS total_transactions " +
+                "FROM (SELECT date, ordersubtotal, salestax, total, COUNT(*) AS total_transactions FROM salesbridge GROUP BY date, ordersubtotal, salestax, total) AS subquery " +
                 "GROUP BY date " +
                 ") " +
                 "INSERT INTO x_report (report_id, date, sales_subtotal, tax_amount, total_sales, total_transactions) " +
-                "SELECT COALESCE((SELECT MAX(report_id) FROM x_report), 0) + 1, date, ordersubtotal, salestax, total, total_transactions " +
-                "FROM aggregated_sales;";
+                "SELECT COALESCE((SELECT MAX(report_id) FROM x_report), 0) + ROW_NUMBER() OVER (ORDER BY date), date, ordersubtotal, salestax, total, total_transactions " +
+                "FROM aggregated_sales " +
+                "ON CONFLICT (date) DO UPDATE " +
+                "SET sales_subtotal = EXCLUDED.sales_subtotal, " +
+                "    tax_amount = EXCLUDED.tax_amount, " +
+                "    total_sales = EXCLUDED.total_sales, " +
+                "    total_transactions = EXCLUDED.total_transactions;";                
 
                 PreparedStatement appendXReportPstmt = conn.prepareStatement(appendXReportSql);
                 appendXReportPstmt.executeUpdate();
