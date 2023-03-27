@@ -16,7 +16,7 @@ Compile the code and then run it with the database
 - javac *.java
 - java -cp ".:postgresql-42.2.8.jar" App GUI Login MainPanel NavPanel ManagerPanel Sales
 
-Features of the Progam:
+## Features of the Progam:
 
 - Cart function that updates with selected inventory
 - Manager button that allows SCRUM functionality in Inventory, Menu, Total Sales, Daily Sales, and Employees
@@ -27,6 +27,6 @@ Features of the Progam:
 
 ## How to log in to the database 
 
-Username: psql -h csce-315-db.engr.tamu.edu -U csce315331_epsilon_master -d csce315331_epsilon
-Password: *******
+- Username: psql -h csce-315-db.engr.tamu.edu -U csce315331_epsilon_master -d csce315331_epsilon
+- Password: *******
 
